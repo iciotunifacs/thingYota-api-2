@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   secret: {
     guest: process.env.SECRET_GUEST,
     user: process.env.SECRET_USER,
