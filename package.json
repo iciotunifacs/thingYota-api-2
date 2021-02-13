@@ -8,7 +8,7 @@
     "dev": "NODE_ENV=development  ./node_modules/nodemon/bin/nodemon.js ./bin/server",
     "dev-docker": "NODE_ENV=development-docker ./node_modules/nodemon/bin/nodemon.js bin/server",
     "start": "NODE_ENV=production node bin/server",
-    "tsc:compile": "tsc -c",
+    "tsc:compile": "tsc",
     "tsc:watch": "tsc --watch"
   },
   "author": "victorfeernandesraton",
