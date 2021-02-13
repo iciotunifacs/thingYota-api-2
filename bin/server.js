@@ -19,8 +19,8 @@ require("dotenv").config({
 });
 
 const mongoose = require("mongoose");
-const server = require("../src/server");
-const env = require("../src/config/env");
+const server = require("../dist/server");
+const env = require("../dist/config/env");
 
 const url = env.db.username
   ? `${env.db.url}://${env.db.username}:${env.db.password}@${env.db.host}/${env.db.database}`
