@@ -5,7 +5,6 @@ let url = `${env.mqtt.protocol}://${env.mqtt.host}${
   env.mqtt.port ? ":" + env.mqtt.port : ""
 }${env.mqtt.url ? "/" + env.mqtt.url : ""}`;
 
-console.log(url)
 const client = mqtt.connect(url);
 
 module.exports = client;
