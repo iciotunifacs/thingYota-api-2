@@ -4,7 +4,7 @@ enum DeviceType {
   OTHER,
 }
 
-interface IDevice {
+export interface IDevice {
   macAdress: string,
   id?: number |string,
   name: string,
