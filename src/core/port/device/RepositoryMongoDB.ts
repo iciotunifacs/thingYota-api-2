@@ -1,20 +1,25 @@
-import Either from '../../shared/either/'
+import Either, {Left, Right}  from '../../shared/either/'
 import IPagination from '../../shared/pagination/'
 import Device, {IDevice} from '../../device/Device'
 import IDeviceRepo, { IDeviceOptions } from './Repository';
 import * as DeviceScheme from '../../../model/device.js';
 
 export default class DeviceRepoMongo implements IDeviceRepo {
-  find(args: IDevice, opts: IDeviceOptions): Promise<Either<Device[], Error>> {
+  async find(args: IDevice, opts: IDeviceOptions): Promise<Either<Error, Device[]> {
+    try {
+      const data = await DeviceScheme.find(args).populate("Sensors").populate("Actors").exec()
+      return Right<Device[]>(data.map((i: any) => new Device(i)));
+    } catch (error) {
+      return Left<Error>(new Error(error))
+    }
+  }
+  findOne(id: string | number): Promise<Either<Error, Device>> {
+
+  }
+  create(args: IDevice): Promise<Either<Error, Device>> {
     throw new Error('Method not implemented.');
   }
-  findOne(id: string | number): Promise<Either<Device, Error>> {
-    throw new Error('Method not implemented.');
-  }
-  create(args: IDevice): Promise<Either<Device, Error>> {
-    throw new Error('Method not implemented.');
-  }
-  update(args: IDevice, conditions: IDevice): Promise<Either<Device[], Error>> {
+  update(args: IDevice, conditions: IDevice): Promise<Either<Error, Device[]>> {
     throw new Error('Method not implemented.');
   }
 
