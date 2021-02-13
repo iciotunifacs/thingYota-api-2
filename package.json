@@ -18,7 +18,6 @@
     "url": "https://github.com/victorfernandesraton/thingYota-api2"
   },
   "dependencies": {
-    "@types/mongoose": "^5.7.36",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.2.1",
@@ -32,6 +31,7 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.10.3",
     "@types/restify": "^8.5.0",
     "@types/restify-cors-middleware": "^1.0.1",
     "@types/restify-plugins": "^1.5.12",
