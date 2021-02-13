@@ -1,5 +1,5 @@
-import {Right}from './Either'
+import {IRight}from './Either'
 
-export default function<B>(val: B): Right<B> {
+export default function<B>(val: B): IRight<B> {
   return {value: {...val}, tag: 'right'}
 }
