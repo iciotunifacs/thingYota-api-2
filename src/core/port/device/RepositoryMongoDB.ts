@@ -6,7 +6,7 @@ import DeviceScheme from '../../../model/device.js';
 export default class DeviceRepoMongo implements IDeviceRepo {
   async find(args: IDevice, opts: IDeviceOptions): Promise<Either<Error, Device[]>> {
     try {
-      const data = await DeviceScheme.find(args).populate("Sensors").populate("Actors").exec()
+      const data = await DeviceScheme.find({...args}).populate("Sensors").populate("Actors").skip(opts.offset || 0).limit(opts.limit || 10)
       return Right<Device[]>(data.map((i: any) => new Device(i)));
     } catch (error) {
       return Left<Error>(new Error(error))
@@ -24,11 +24,15 @@ export default class DeviceRepoMongo implements IDeviceRepo {
       return Left<Error>(new Error(error))
     }
   }
-  create(args: IDevice): Promise<Either<Error, Device>> {
-    throw new Error('Method not implemented.');
+  async create(args: IDevice): Promise<Either<Error, Device>> {
+    try {
+      const data = await DeviceScheme.create({...args});
+      return Right<Device>(new Device(data))
+    } catch (error) {
+      return Left<Error>(new Error(error))
+    }
   }
   update(args: IDevice, conditions: IDevice): Promise<Either<Error, Device[]>> {
     throw new Error('Method not implemented.');
   }
-
 }

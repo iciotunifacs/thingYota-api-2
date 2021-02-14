@@ -1,8 +1,8 @@
 {
   "name": "thingyota-api-2",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Server REST api for monitoring water system",
-  "main": "server.js",
+  "main": "./bin/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=development  ./node_modules/nodemon/bin/nodemon.js ./bin/server",

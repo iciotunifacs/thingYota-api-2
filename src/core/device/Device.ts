@@ -6,7 +6,6 @@ enum DeviceType {
 
 export interface IDevice {
   macAdress: string,
-  // id?: number |string,
   name: string,
   type?: DeviceType
 }
