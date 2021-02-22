@@ -21,7 +21,7 @@ mqtt.on("message", async (topic, data, packet) => {
   console.log(`[${topic}]`, payload.toString());
   try {
     const payload = JSON.parse(data.toString());
-    mqttHandler(payload, io);
+    mqttHandler(payload, workerData?.io);
   } catch (error) {
     console.error(error);
   }
