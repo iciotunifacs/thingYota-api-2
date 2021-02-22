@@ -27,13 +27,7 @@ const url = env.db.username
   ? `${env.db.url}://${env.db.username}:${env.db.password}@${env.db.host}/${env.db.database}`
   : `${env.db.url}://${env.db.host}/${env.db.database}`;
 
-const worker = new Worker(path.resolve(__dirname, '../','./mqtt-listener.js'));
-  worker.on('message', console.log);
-  worker.on('error', console.error);
-  worker.on('exit', (code) => {
-    if (code !== 0)
-      reject(new Error(`Worker stopped with exit code ${code}`));
-  })
+
 mongoose
   .connect(url, {
     useNewUrlParser: true,
