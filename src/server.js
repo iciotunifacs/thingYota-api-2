@@ -2,10 +2,7 @@ const server = require("./config/server");
 const router = require("./routes");
 const socketIo = require('socket.io');
 const logger = require("morgan");
-const mqtt = require('./services/mqtt-service');
-const mqttHandler = require('./controller/mqtt');
 const io = socketIo.listen(server.server);
-const env = require('./config/env');
 
 server.use((req, res, next) => {
   // socket
@@ -27,31 +24,6 @@ server.get("/", (req, res, next) => {
   res.header('Content-Type', 'text/html')
   return res.end("<h1>This is a REST API</h1>");
 });
-
-
-mqtt.on("connect", (data,err) => {
-  console.info(`connected sucessful in mqtt broker `);
-  mqtt.subscribe(env.mqtt.server_broker, (err) => {
-    if (err) {
-      console.error(err);
-      mqtt.end();
-    }
-  });
-});
-
-mqtt.on("message", async (topic, data, packet) => {
-  // message is Buffer
-  console.info(Date());
-  let payload = data.toString();
-  console.log(`[${topic}]`, payload.toString());
-  try {
-    const payload = JSON.parse(data.toString());
-    mqttHandler(payload, io);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
 
 server.on("error", (error) => {
   console.error(error);
