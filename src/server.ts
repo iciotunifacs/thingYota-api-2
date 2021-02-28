@@ -1,5 +1,5 @@
 import server, { Request, Response, Next } from "./config/server";
-const router = require("./routes");
+import router from "./routes/index";
 const socketIo = require("socket.io");
 const logger = require("morgan");
 const mqtt = require("./services/mqtt-service");

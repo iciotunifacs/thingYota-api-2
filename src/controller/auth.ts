@@ -1,8 +1,10 @@
+import { Request, Response, Next } from "restify";
+import config from "../config/env";
+
 const User = require("../model/user");
 const Device = require("../model/device");
 const md5 = require("md5");
 const jwt = require("jsonwebtoken");
-const config = require("../config/env");
 const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
 const errors = require("restify-errors");
 
@@ -12,7 +14,7 @@ const errors = require("restify-errors");
  * @param {Response} res
  * @param {Send} send
  */
-const authUser = async (req, res, send) => {
+const authUser = async (req: Request, res: Response, send: Next) => {
   if (req.body == null || req.body == undefined)
     return res.send(new errors.InvalidArgumentError("body is empty"));
 
@@ -60,7 +62,7 @@ const authUser = async (req, res, send) => {
  * @param {Send} send
  * @requires req.body.mac_addres
  */
-const authDevice = async (req, res, send) => {
+const authDevice = async (req: Request, res: Response, send: Next) => {
   if (req.body == null || req.body == undefined) {
     return res.send(new errors.InvalidArgumentError("body is empty"));
   }
@@ -105,7 +107,7 @@ const authDevice = async (req, res, send) => {
  * @param {Response} res
  * @param {Send} send
  */
-const authGuest = async (req, res, send) => {
+const authGuest = async (req: Request, res: Response, send: Next) => {
   const token = await jwt.sign(
     {
       entity: "Guest",
@@ -119,8 +121,4 @@ const authGuest = async (req, res, send) => {
   });
 };
 
-module.exports = {
-  authUser,
-  authDevice,
-  authGuest,
-};
+export { authUser, authDevice, authGuest };
