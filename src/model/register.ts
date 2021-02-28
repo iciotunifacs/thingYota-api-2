@@ -1,20 +1,24 @@
-const mongoose = require("mongoose");
-
-const registerSchema = new mongoose.Schema(
+import { Document, model, Schema } from "mongoose";
+import { RegisterObject } from "../core/register/";
+import ITimeStamp from "../core/shared/timestamp/Interface";
+export interface RegisterDocument extends Document, RegisterObject {
+  timestamp: ITimeStamp;
+}
+const registerSchema = new Schema(
   {
     Fk_device: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Device",
       required: true,
     },
     // No use refer because is have varios types
     Fk_Sensor: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Sensor",
       default: null,
     },
     Fk_Actor: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Actor",
       default: null,
     },
@@ -36,4 +40,4 @@ const registerSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Register", registerSchema);
+export default model<RegisterDocument>("Register", registerSchema);
