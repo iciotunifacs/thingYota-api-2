@@ -1,6 +1,11 @@
-const mongoose = require("mongoose");
+import { Schema, Document, model } from "mongoose";
+import { ActorObject } from "../core/actor/";
+import ITimeStamp from "../core/shared/timestamp/Interface";
 
-const actorSchema = new mongoose.Schema(
+export interface ActorDocument extends Document, ActorObject {
+  timestamp: ITimeStamp;
+}
+const actorSchema = new Schema(
   {
     name: {
       type: String,
@@ -11,7 +16,7 @@ const actorSchema = new mongoose.Schema(
       required: true,
     },
     device_parent: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Device",
       required: true,
     },
@@ -39,4 +44,4 @@ const actorSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Actor", actorSchema);
+export default model<ActorDocument>("Actor", actorSchema);
