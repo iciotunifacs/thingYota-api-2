@@ -1,6 +1,11 @@
-const mongoose = require("mongoose");
+import Mongoose, { Schema, Document } from "mongoose";
+import ITimeStamp from "../core/shared/timestamp/Interface";
+import { BucketObject } from "../core/bucket/";
 
-const bucketSchema = new mongoose.Schema(
+export interface DeviceDocument extends BucketObject, Document {
+  timestamp: ITimeStamp;
+}
+const bucketSchema = new Schema(
   {
     name: {
       type: String,
@@ -8,13 +13,13 @@ const bucketSchema = new mongoose.Schema(
     },
     Sensors: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Sensor",
       },
     ],
     Actors: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Actor",
       },
     ],
@@ -39,4 +44,4 @@ const bucketSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Bucket", bucketSchema);
+export default Mongoose.model<DeviceDocument>("Bucket", bucketSchema);
