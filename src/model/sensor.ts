@@ -1,6 +1,8 @@
-const mongoose = require("mongoose");
-
-const sensorSchema = new mongoose.Schema(
+import { model, Document, Schema } from "mongoose";
+import ITimeStamp from "../core/shared/timestamp/Interface";
+import { SensorObject } from "../core/sensor/";
+export interface SensorDocument extends SensorObject, ITimeStamp, Document {}
+const sensorSchema = new Schema(
   {
     name: {
       type: String,
@@ -11,7 +13,7 @@ const sensorSchema = new mongoose.Schema(
       required: true,
     },
     device_parent: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Device",
       required: true,
     },
@@ -36,4 +38,4 @@ const sensorSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Sensor", sensorSchema);
+export default model<SensorDocument>("Sensor", sensorSchema);
