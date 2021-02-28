@@ -1,4 +1,4 @@
 export default interface ITimeStamp {
-  createdAt: Date,
-  updatedAt: Date,
+  created_at: Date;
+  last_change: Date;
 }
