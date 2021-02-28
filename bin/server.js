@@ -10,7 +10,7 @@ switch (process.env.NODE_ENV) {
     break;
   case "production":
   default:
-    envPath = '.env';
+    envPath = ".env";
     break;
 }
 
@@ -20,7 +20,9 @@ require("dotenv").config({
 
 const mongoose = require("mongoose");
 const server = require("../dist/server");
-const env = require("../dist/config/env");
+const env = require("../dist/config/env").default;
+
+console.table(env);
 
 const url = env.db.username
   ? `${env.db.url}://${env.db.username}:${env.db.password}@${env.db.host}/${env.db.database}`
@@ -35,12 +37,11 @@ mongoose
   .then((data) => {
     console.info("Database as connected");
     console.info(url);
-    server.listen(env.sever.port, (data) => {
+    server.start(env.sever.port, (data) => {
       console.info(`Press CTRL+C to kill`);
     });
   })
   .catch((error) => {
     console.error(error);
-    process.exit(1)
+    process.exit(1);
   });
-

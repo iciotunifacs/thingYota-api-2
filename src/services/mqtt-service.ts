@@ -1,5 +1,5 @@
-const env = require("../config/env");
-const mqtt = require("mqtt");
+import env from "../config/env";
+import mqtt from "mqtt";
 
 let url = `${env.mqtt.protocol}://${env.mqtt.host}${
   env.mqtt.port ? ":" + env.mqtt.port : ""
@@ -7,4 +7,4 @@ let url = `${env.mqtt.protocol}://${env.mqtt.host}${
 
 const client = mqtt.connect(url);
 
-module.exports = client;
+export default client;

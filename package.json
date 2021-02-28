@@ -5,9 +5,9 @@
   "main": "./bin/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV=development  ./node_modules/nodemon/bin/nodemon.js ./bin/server",
-    "dev-docker": "NODE_ENV=development-docker ./node_modules/nodemon/bin/nodemon.js bin/server",
-    "start": "NODE_ENV=production node bin/server",
+    "dev": "cross-env NODE_ENV=development nodemon ./bin/server",
+    "dev-docker": "cross-env NODE_ENV=development-docker ./node_modules/nodemon/bin/nodemon.js bin/server",
+    "start": "cross-env NODE_ENV=production node bin/server",
     "build": "tsc",
     "tsc:watch": "tsc --watch"
   },
@@ -18,15 +18,18 @@
     "url": "https://github.com/victorfernandesraton/thingYota-api2"
   },
   "dependencies": {
+    "@types/morgan": "^1.9.2",
+    "@types/socket.io": "^2.1.13",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.2.1",
-    "mongoose": "^5.9.22",
+    "mongoose": "^5.11.18",
     "morgan": "^1.10.0",
     "mqtt": "^4.1.0",
     "restify": "^8.5.1",
     "restify-cors-middleware": "^1.1.1",
     "restify-errors": "^8.0.2",
+    "restify-plugins": "^1.6.0",
     "restify-router": "^0.5.1",
     "socket.io": "^2.3.0"
   },
@@ -35,8 +38,9 @@
     "@types/restify": "^8.5.0",
     "@types/restify-cors-middleware": "^1.0.1",
     "@types/restify-plugins": "^1.5.12",
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
-    "typescript": "^4.1.5"
+    "typescript": "^4.2.2"
   }
 }
