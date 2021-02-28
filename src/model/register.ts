@@ -1,9 +1,11 @@
 import { Document, model, Schema } from "mongoose";
 import { RegisterObject } from "../core/register/";
 import ITimeStamp from "../core/shared/timestamp/Interface";
-export interface RegisterDocument extends Document, RegisterObject {
-  timestamp: ITimeStamp;
-}
+export interface RegisterDocument
+  extends Document,
+    RegisterObject,
+    ITimeStamp {}
+
 const registerSchema = new Schema(
   {
     Fk_device: {

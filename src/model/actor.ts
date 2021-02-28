@@ -2,9 +2,8 @@ import { Schema, Document, model } from "mongoose";
 import { ActorObject } from "../core/actor/";
 import ITimeStamp from "../core/shared/timestamp/Interface";
 
-export interface ActorDocument extends Document, ActorObject {
-  timestamp: ITimeStamp;
-}
+export interface ActorDocument extends Document, ActorObject, ITimeStamp {}
+
 const actorSchema = new Schema(
   {
     name: {

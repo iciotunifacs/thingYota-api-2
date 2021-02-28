@@ -1,9 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 import ITimeStamp from "../core/shared/timestamp/Interface";
 import { DeviceObject } from "../core/device/";
-interface DeviceDocument extends Document, DeviceObject {
-  timestamp?: ITimeStamp;
-}
+interface DeviceDocument extends Document, DeviceObject, ITimeStamp {}
 const deviceSchemme: Schema = new Schema(
   {
     name: {

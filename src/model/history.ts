@@ -1,9 +1,8 @@
 import { model, Schema, Document } from "mongoose";
 import { HistoryObject } from "../core/history";
 import ITimeStamp from "../core/shared/timestamp/Interface";
-export interface HistoryDocument extends Document, HistoryObject {
-  timestamp: ITimeStamp;
-}
+export interface HistoryDocument extends Document, HistoryObject, ITimeStamp {}
+
 const HistoryScheme = new Schema(
   {
     From_type: {
