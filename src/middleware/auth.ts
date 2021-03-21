@@ -27,7 +27,7 @@ export const authGuest = async (req: Request, res: Response, next: Next) => {
   }
 
   try {
-    const valid = await jwt.verify(token, config.secret.guest);
+    await jwt.verify(token, config.secret.guest);
     req.token = token;
     next();
   } catch (error) {
