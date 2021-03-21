@@ -28,9 +28,10 @@
 import { Router } from "restify-router";
 import auth from "./auth";
 import user from "./user";
+import signup from "./singup";
 const router = new Router();
 
 router.add("/auth", auth);
 router.add("/user", user);
-
+router.add("/signup", signup);
 export default router;

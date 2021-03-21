@@ -12,7 +12,7 @@ import mongoose from "mongoose";
  * @param {Response} res
  * @param {Function} next
  */
-const find = async (req: Request, res: Response, next: Next) => {
+export const find = async (req: Request, res: Response, next: Next) => {
   const { limit } = req.query;
   const offset = (parseInt(req.query?.offset) - 1) * limit || 0;
   try {
@@ -42,7 +42,7 @@ const find = async (req: Request, res: Response, next: Next) => {
  * @param {next} next
  * @requires req
  */
-const create = async (req: Request, res: Response, next: Next) => {
+export const create = async (req: Request, res: Response, next: Next) => {
   if (!req.body) {
     return res.send(new errors.InvalidArgumentError("body is empty"));
   }
@@ -56,6 +56,7 @@ const create = async (req: Request, res: Response, next: Next) => {
     });
     await user.validate();
     const result = await user.save();
+
     return res.send(201, { data: result });
   } catch (error) {
     if (error.code == 11000) {
@@ -71,15 +72,18 @@ const create = async (req: Request, res: Response, next: Next) => {
   }
 };
 
-const findOne = async (req: Request, res: Response, next: Next) => {
+export const findOne = async (req: Request, res: Response, next: Next) => {
   const { id } = req.params;
-  if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
+  if (!id) {
+    return res.send(new errors.InvalidArgumentError("id not found"));
+  }
 
   try {
     const data = await User.findById(req.params.id);
 
-    if (!data)
+    if (!data) {
       return res.send(new errors.NotFoundError(`User_id ${id} not found`));
+    }
 
     return res.send(200, {
       res: true,
@@ -98,7 +102,7 @@ const findOne = async (req: Request, res: Response, next: Next) => {
  * @param {Response} res
  * @param {*} next
  */
-const put = async (req: Request, res: Response, next: Next) => {
+export const put = async (req: Request, res: Response, next: Next) => {
   if (!req.body)
     return res.send(new errors.InvalidArgumentError("body is empty"));
 
@@ -121,8 +125,9 @@ const put = async (req: Request, res: Response, next: Next) => {
       useFindAndModify: false,
     });
 
-    if (!user)
+    if (!user) {
       return res.send(new errors.NotFoundError(`User_id ${id} not found`));
+    }
 
     return res.send(200, { data: user });
   } catch (error) {
@@ -136,7 +141,11 @@ const put = async (req: Request, res: Response, next: Next) => {
  * @param {Response} res
  * @param {Next} next
  */
-const createRelationShip = async (req: Request, res: Response, next: Next) => {
+export const createRelationShip = async (
+  req: Request,
+  res: Response,
+  next: Next
+) => {
   if (req.body == null || req.body == undefined)
     return res.send(new errors.InvalidArgumentError("body is empty"));
 
@@ -207,7 +216,11 @@ const createRelationShip = async (req: Request, res: Response, next: Next) => {
  * @param {Response} res
  * @param {Next} next
  */
-const deleteRelationShip = async (req: Request, res: Response, next: Next) => {
+export const deleteRelationShip = async (
+  req: Request,
+  res: Response,
+  next: Next
+) => {
   if (req.body == null || req.body == undefined)
     return res.send(new errors.InvalidArgumentError("body is empty"));
 
@@ -268,13 +281,4 @@ const deleteRelationShip = async (req: Request, res: Response, next: Next) => {
     console.log(error);
     return res.send(new errors.InternalServerError(error));
   }
-};
-
-module.exports = {
-  find,
-  findOne,
-  create,
-  put,
-  createRelationShip,
-  deleteRelationShip,
 };

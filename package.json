@@ -20,6 +20,7 @@
     "url": "https://github.com/victorfernandesraton/thingYota-api2"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^8.5.1",
     "@types/morgan": "^1.9.2",
     "@types/restify-errors": "^4.3.3",
     "@types/socket.io": "^2.1.13",
