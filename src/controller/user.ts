@@ -52,7 +52,11 @@ const create = async (req: Request, res: Response, next: Next) => {
       ...req.body,
     });
 
+    console.log(user.password);
+
     await user.validate();
+
+    user.p;
 
     if (user) {
       const result = await User.insertMany([user], { rawResult: true });

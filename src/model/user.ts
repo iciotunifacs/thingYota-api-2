@@ -51,13 +51,16 @@ const userSchema = new Schema(
 );
 
 // Encriptador de senha
-userSchema.pre<UserDocument>("save", async function (next) {
+userSchema.pre<UserDocument>(["init", "updateOne", "save"], function (next) {
+  console.log("here");
   // alteração dos valores
   const salt = generateSalt(10);
+  console.log(salt);
   if (salt.tag == "left") {
     throw salt.value;
   } else {
     const newpassword = hash(this?.password?.hash_password, salt.value);
+    console.log(newpassword);
     if (newpassword.tag == "left") {
       throw newpassword.value;
     } else {
