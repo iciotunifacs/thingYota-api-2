@@ -1,10 +1,11 @@
 import { Request, Response, Next } from "restify";
 import config from "../config/env";
+import User from "../model/user";
 
-const User = require("../model/user");
 const Device = require("../model/device");
 const md5 = require("md5");
 const jwt = require("jsonwebtoken");
+
 const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
 const errors = require("restify-errors");
 
@@ -12,18 +13,19 @@ const errors = require("restify-errors");
  * @description Handler to verified troken acess
  * @param {Request} req
  * @param {Response} res
- * @param {Send} send
  */
-const authUser = async (req: Request, res: Response, send: Next) => {
-  if (req.body == null || req.body == undefined)
+const authUser = async (req: Request, res: Response) => {
+  if (!req.body) {
     return res.send(new errors.InvalidArgumentError("body is empty"));
+  }
 
   const bodyNotFound = validaionBodyEmpty(req.body, ["username", "password"]);
 
-  if (bodyNotFound.length > 0)
+  if (bodyNotFound.length > 0) {
     return res.send(
       new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
     );
+  }
 
   let { username, email, password } = req.body;
 
@@ -34,8 +36,7 @@ const authUser = async (req: Request, res: Response, send: Next) => {
 
   const user = await User.findOne(query);
 
-  if (!user || user.length == 0)
-    return res.send(new errors.NotFoundError("User not found"));
+  if (!user) return res.send(new errors.NotFoundError("User not found"));
 
   const token = await jwt.sign(
     {
@@ -59,7 +60,7 @@ const authUser = async (req: Request, res: Response, send: Next) => {
  * @description Auth Device in system
  * @param {Request} req
  * @param {Response} res
- * @param {Send} send
+ * @param {Next} send
  * @requires req.body.mac_addres
  */
 const authDevice = async (req: Request, res: Response, send: Next) => {
@@ -67,10 +68,11 @@ const authDevice = async (req: Request, res: Response, send: Next) => {
     return res.send(new errors.InvalidArgumentError("body is empty"));
   }
   const bodyNotFound = validaionBodyEmpty(req.body, ["mac_addres"]);
-  if (bodyNotFound.length > 0)
+  if (bodyNotFound.length > 0) {
     return res.send(
       new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
     );
+  }
 
   const { mac_addres } = req.body;
 
@@ -105,7 +107,7 @@ const authDevice = async (req: Request, res: Response, send: Next) => {
  * @description Auth guest in system
  * @param {Request} req
  * @param {Response} res
- * @param {Send} send
+ * @param {Next} send
  */
 const authGuest = async (req: Request, res: Response, send: Next) => {
   const token = await jwt.sign(

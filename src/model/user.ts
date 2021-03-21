@@ -67,4 +67,4 @@ userSchema.pre<UserDocument>("save", async function (next) {
   }
 });
 
-module.exports = model<UserDocument>("User", userSchema);
+export default model<UserDocument>("User", userSchema);
