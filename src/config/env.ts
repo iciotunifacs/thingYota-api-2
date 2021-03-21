@@ -1,4 +1,4 @@
-export default {
+const config = {
   secret: {
     guest: process.env.SECRET_GUEST,
     user: process.env.SECRET_USER,
@@ -20,6 +20,8 @@ export default {
     host: process.env.MQTT_HOST,
     url: process.env.MQTT_URL,
     port: process.env.MQTT_PORT,
-    server_broker : process.env.MQTT_SEVER_BROKER
+    server_broker: process.env.MQTT_SEVER_BROKER,
   },
 };
+
+export default config;

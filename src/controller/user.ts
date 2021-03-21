@@ -1,8 +1,10 @@
-const User = require("../model/user");
-const Bucket = require("../model/bucket");
-const md5 = require("md5");
-const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
-const errors = require("restify-errors");
+import { Request, Response, Next } from "restify";
+import errors from "restify-errors";
+
+import User from "../model/user";
+import Bucket from "../model/bucket";
+import { validaionBodyEmpty, trimObjctt } from "../utils/common";
+import mongoose from "mongoose";
 
 /**
  * @description Get alll users use queeryparans to filter then
@@ -10,13 +12,13 @@ const errors = require("restify-errors");
  * @param {Response} res
  * @param {Function} next
  */
-const find = async (req, res, next) => {
+const find = async (req: Request, res: Response, next: Next) => {
   const { limit } = req.query;
-  const offset = (req.query.offset - 1) * limit || 0;
+  const offset = (parseInt(req.query?.offset) - 1) * limit || 0;
   try {
     const data = await User.find()
       .limit(parseInt(limit) || 0)
-      .skip(parseInt(offset) || 0)
+      .skip(offset || 0)
       .exec();
 
     const total = await User.estimatedDocumentCount();
@@ -40,55 +42,54 @@ const find = async (req, res, next) => {
  * @param {next} next
  * @requires req
  */
-const create = async (req, res, next) => {
-  if (req.body == null || req.body == undefined)
+const create = async (req: Request, res: Response, next: Next) => {
+  if (!req.body) {
     return res.send(new errors.InvalidArgumentError("body is empty"));
-
-  const bodyNotFound = validaionBodyEmpty(req.body, [
-    "username",
-    "email",
-    "first_name",
-    "password",
-  ]);
-
-  if (bodyNotFound.length > 0)
-    return res.send(
-      new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
-    );
+  }
 
   const { username, first_name, last_name, password, email } = req.body;
 
-  User.create({
-    username,
-    first_name,
-    last_name,
-    email,
-    password,
-  })
-    .then((data) => res.send(201, { data: data }))
-    .catch((error) => {
-      if (error.code == 11000) {
-        return res.send(
-          new errors.ConflictError(
-            `duplicated : ${JSON.stringify(error.keyValue)}`
-          )
-        );
-      }
-      console.log(error);
-      return res.send(
-        new errors.InternalServerError(`An database error has occoured`)
-      );
+  try {
+    const user = new User({
+      username,
+      first_name,
+      status: true,
+      bucket: [],
+      last_name,
+      email,
+      password,
     });
+
+    await user.validate();
+
+    if (user) {
+      const result = await User.insertMany([user], { rawResult: true });
+      return res.send(201, { data: result.ops });
+    } else {
+      return res.send(new errors.InternalError(`error in server ${user}`));
+    }
+  } catch (error) {
+    if (error.code == 11000) {
+      return res.send(
+        new errors.ConflictError(
+          `duplicated : ${JSON.stringify(error.keyValue)}`
+        )
+      );
+    } else if (error instanceof mongoose.Error.ValidationError) {
+      return res.send(new errors.InvalidContentError(error));
+    }
+    return res.send(new errors.InternalServerError(error));
+  }
 };
 
-const findOne = async (req, res, next) => {
+const findOne = async (req: Request, res: Response, next: Next) => {
   const { id } = req.params;
   if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 
   try {
     const data = await User.findById(req.params.id);
 
-    if (!data || data.length == 0)
+    if (!data)
       return res.send(new errors.NotFoundError(`User_id ${id} not found`));
 
     return res.send(200, {
@@ -104,11 +105,11 @@ const findOne = async (req, res, next) => {
 
 /**
  * @description Put data update in refs by pk id
- * @param {{params: {id: String}, body:{name?: String, type?: String, send: Boolean}}} req
+ * @param {{params: {id: String}, body:{name?: String, type?: String, next: Boolean}}} req
  * @param {Response} res
- * @param {*} send
+ * @param {*} next
  */
-const put = async (req, res, send) => {
+const put = async (req: Request, res: Response, next: Next) => {
   if (req.body == null || req.body == undefined)
     return res.send(new errors.InvalidArgumentError("body is empty"));
 
@@ -117,7 +118,7 @@ const put = async (req, res, send) => {
 
   if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 
-  let sendParans = trimObjctt({
+  let nextParans = trimObjctt({
     type,
     status,
     username,
@@ -127,11 +128,11 @@ const put = async (req, res, send) => {
   });
 
   try {
-    const user = await User.findByIdAndUpdate(id, sendParans, {
+    const user = await User.findByIdAndUpdate(id, nextParans, {
       useFindAndModify: false,
     });
 
-    if (!user || user.length == 0)
+    if (!user)
       return res.send(new errors.NotFoundError(`User_id ${id} not found`));
 
     return res.send(200, { data: user });
@@ -144,9 +145,9 @@ const put = async (req, res, send) => {
  * @description Create relationship using user
  * @param {{body: {to: String, type: String}, params: {id: String}}} req
  * @param {Response} res
- * @param {Next} send
+ * @param {Next} next
  */
-const createRelationShip = async (req, res, send) => {
+const createRelationShip = async (req: Request, res: Response, next: Next) => {
   if (req.body == null || req.body == undefined)
     return res.send(new errors.InvalidArgumentError("body is empty"));
 
@@ -165,7 +166,7 @@ const createRelationShip = async (req, res, send) => {
 
   const user = await User.findById(req.params.id);
 
-  if (!user || user.length == 0)
+  if (!user)
     return res.send(new errors.NotFoundError(`User._id ${id} not found`));
 
   let dataTo, data;
@@ -215,9 +216,9 @@ const createRelationShip = async (req, res, send) => {
  * @description Delete relationship using user
  * @param {{body: {to: String, type: String}, params: {id: String}}} req
  * @param {Response} res
- * @param {Next} send
+ * @param {Next} next
  */
-const deleteRelationShip = async (req, res, send) => {
+const deleteRelationShip = async (req: Request, res: Response, next: Next) => {
   if (req.body == null || req.body == undefined)
     return res.send(new errors.InvalidArgumentError("body is empty"));
 
@@ -236,8 +237,9 @@ const deleteRelationShip = async (req, res, send) => {
 
   const user = await User.findById(req.params.id);
 
-  if (!user || user.length == 0)
+  if (!user) {
     return res.send(new errors.NotFoundError(`User._id ${id} not found`));
+  }
 
   let dataTo, data;
 

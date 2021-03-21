@@ -1,8 +1,8 @@
-const User = require("../model/user");
-const Device = require("../model/device");
-const jwt = require("jsonwebtoken");
-const config = require("../config/env");
-const errors = require("restify-errors");
+import User from "../model/user";
+import Device from "../model/device";
+import jwt from "jsonwebtoken";
+import config from "../config/env";
+import errors from "restify-errors";
 
 /**
  * @description Função que valida o token de huest
@@ -69,7 +69,7 @@ const authUser = async (req, res, send) => {
     );
   req.token = token;
   req.locals = {
-    authObject: {...data._doc, entity}
+    authObject: { ...data._doc, entity },
   };
   send();
 };
