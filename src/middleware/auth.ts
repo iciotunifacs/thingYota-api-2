@@ -74,20 +74,28 @@ export const authUser = async (req: Request, res: Response, next: Next) => {
     return res.send(new errors.InternalError("secret user not found"));
   }
 
-  jwt.verify(token, config.secret.user, (err, decoded) => {
-    if (err) return res.send(new errors.InvalidHeaderError("Invalid Token"));
-  });
-
-  const decoded = jwt.decode(token, { complete: true, json: true });
-  const entity = decoded?.entity;
-  const id = decoded?.id;
-  if (!entity)
-    return res.send(new errors.InvalidArgumentError("Entity info not found "));
-  const data = await getDatafromEntity({ entity, id });
-
-  req.token = token;
-  req.locals = {
-    authObject: { ...data, entity },
-  };
-  next();
+  try {
+    await jwt.verify(token, config.secret.user);
+    const decoded = jwt.decode(token, { complete: true, json: true });
+    const { entity, id } = decoded?.payload;
+    if (!entity) {
+      return res.send(
+        new errors.InvalidArgumentError("Entity info not found ")
+      );
+    }
+    const data = await getDatafromEntity({ entity, id });
+    if (!data) {
+      return res.send(new errors.NotFoundError("entity not found"));
+    }
+    if (!data?.status && entity == "User") {
+      return res.send(new errors.InvalidCredentialsError("User is not active"));
+    }
+    req.token = token;
+    req.locals = {
+      authObject: { ...data, entity },
+    };
+    next();
+  } catch (error) {
+    return res.send(new errors.InternalError(error));
+  }
 };

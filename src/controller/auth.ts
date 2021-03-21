@@ -1,5 +1,9 @@
 import { Request, Response, Next } from "restify";
+import errors from "restify-errors";
+
 import config from "../config/env";
+import { compare } from "../core/user";
+import { sendEmmiter } from "../middleware/mqtt";
 import User from "../model/user";
 
 const Device = require("../model/device");
@@ -7,7 +11,6 @@ const md5 = require("md5");
 const jwt = require("jsonwebtoken");
 
 const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
-const errors = require("restify-errors");
 
 /**
  * @description Handler to verified troken acess
@@ -29,19 +32,35 @@ const authUser = async (req: Request, res: Response) => {
 
   let { username, email, password } = req.body;
 
-  let query = trimObjctt({
-    password: md5(password),
-    email: username,
-  });
+  const user = await User.findOne({ email: username });
 
-  const user = await User.findOne(query);
+  if (!user) {
+    return res.send(
+      new errors.NotAuthorizedError("incorrect password or username")
+    );
+  }
 
-  if (!user) return res.send(new errors.NotFoundError("User not found"));
+  if (!user.status) {
+    return res.send(new errors.InvalidCredentialsError("user is not active"));
+  }
+
+  const comparePassword = compare(password, user.password);
+
+  if (comparePassword.tag == "left") {
+    return res.send(comparePassword.value);
+  }
+
+  if (comparePassword.tag == "right" && !comparePassword.value) {
+    return res.send(
+      new errors.NotAuthorizedError("incorrect password or username")
+    );
+  }
 
   const token = await jwt.sign(
     {
       username: user.username,
-      password: user.password,
+      email: user.email,
+      status: user.status,
       id: user._id,
       entity: "User",
     },
@@ -51,7 +70,14 @@ const authUser = async (req: Request, res: Response) => {
     res: true,
     data: {
       token,
-      user,
+      user: {
+        username: user.username,
+        email: user.email,
+        status: user.status,
+        _id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+      },
     },
   });
 };
