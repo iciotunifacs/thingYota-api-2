@@ -50,20 +50,13 @@ const create = async (req: Request, res: Response, next: Next) => {
   try {
     const user = new User({
       ...req.body,
+      password: {
+        hash_password: req.body.password,
+      },
     });
-
-    console.log(user.password);
-
     await user.validate();
-
-    user.p;
-
-    if (user) {
-      const result = await User.insertMany([user], { rawResult: true });
-      return res.send(201, { data: result.ops });
-    } else {
-      return res.send(new errors.InternalError(`error in server ${user}`));
-    }
+    const result = await user.save();
+    return res.send(201, { data: result });
   } catch (error) {
     if (error.code == 11000) {
       return res.send(
