@@ -13,7 +13,6 @@ import Request from "../core/shared/headers/Request";
  * @param {Send'} send
  */
 export const authGuest = async (req: Request, res: Response, next: Next) => {
-  console.log("teste");
   const autorization = req.header("Authorization");
 
   const token = autorization?.split(" ")[1];
