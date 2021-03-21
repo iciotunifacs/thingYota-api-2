@@ -47,17 +47,9 @@ const create = async (req: Request, res: Response, next: Next) => {
     return res.send(new errors.InvalidArgumentError("body is empty"));
   }
 
-  const { username, first_name, last_name, password, email } = req.body;
-
   try {
     const user = new User({
-      username,
-      first_name,
-      status: true,
-      bucket: [],
-      last_name,
-      email,
-      password,
+      ...req.body,
     });
 
     await user.validate();
@@ -110,7 +102,7 @@ const findOne = async (req: Request, res: Response, next: Next) => {
  * @param {*} next
  */
 const put = async (req: Request, res: Response, next: Next) => {
-  if (req.body == null || req.body == undefined)
+  if (!req.body)
     return res.send(new errors.InvalidArgumentError("body is empty"));
 
   const { id } = req.params;
