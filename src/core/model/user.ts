@@ -1,6 +1,6 @@
 import { model, Schema, Document } from "mongoose";
-import { UserObject, hash, generateSalt } from "../core/user";
-import ITimeStamps from "../core/shared/timestamp/Interface";
+import { UserObject, hash, generateSalt } from "../user";
+import ITimeStamps from "../shared/timestamp/Interface";
 
 export interface UserDocument extends UserObject, ITimeStamps, Document {}
 const userSchema = new Schema(

@@ -1,16 +1,14 @@
 import { Request, Response, Next } from "restify";
 import errors from "restify-errors";
+import jwt from "jsonwebtoken";
 
 import config from "../config/env";
+
 import { compare } from "../core/user";
-import { sendEmmiter } from "../middleware/mqtt";
-import User from "../model/user";
+import User from "../core/model/user";
+import Device from "../core/model/device";
 
-const Device = require("../model/device");
-const md5 = require("md5");
-const jwt = require("jsonwebtoken");
-
-const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
+import { validaionBodyEmpty, trimObjctt } from "../utils/common";
 
 /**
  * @description Handler to verified troken acess
@@ -30,7 +28,7 @@ const authUser = async (req: Request, res: Response) => {
     );
   }
 
-  let { username, email, password } = req.body;
+  let { username, password } = req.body;
 
   const user = await User.findOne({ email: username });
 
@@ -64,7 +62,7 @@ const authUser = async (req: Request, res: Response) => {
       id: user._id,
       entity: "User",
     },
-    config.secret.user
+    config.secret.user ?? ""
   );
   return res.send(200, {
     res: true,
@@ -108,17 +106,16 @@ const authDevice = async (req: Request, res: Response, send: Next) => {
 
   const device = await Device.findOne(query);
 
-  if (!device || device.length == 0)
-    return res.send(new errors.NotFoundError("Device not found"));
+  if (!device) return res.send(new errors.NotFoundError("Device not found"));
 
   const token = await jwt.sign(
     {
       name: device.name,
-      mac_addres: device.mac_addres,
+      mac_addres: device.macAdress,
       id: device._id,
       entity: "Device",
     },
-    config.secret.user
+    config.secret.user ?? ""
   );
   return res.send(200, {
     res: true,
@@ -140,7 +137,7 @@ const authGuest = async (req: Request, res: Response, send: Next) => {
     {
       entity: "Guest",
     },
-    config.secret.guest
+    config?.secret?.guest ?? ""
   );
   return res.send(200, {
     data: {

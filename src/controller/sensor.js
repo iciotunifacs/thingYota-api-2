@@ -1,7 +1,7 @@
-const Sensor = require("../model/sensor");
-const Device = require("../model/device");
-const Bucket = require("../model/bucket");
-const History = require("../model/history");
+const Sensor = require("../core/model/sensor");
+const Device = require("../core/model/device");
+const Bucket = require("../core/model/bucket");
+const History = require("../core/model/history");
 
 const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
 const errors = require("restify-errors");

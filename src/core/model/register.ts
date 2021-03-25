@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
-import { RegisterObject } from "../core/register/";
-import ITimeStamp from "../core/shared/timestamp/Interface";
+import { RegisterObject } from "../register";
+import ITimeStamp from "../shared/timestamp/Interface";
 export interface RegisterDocument
   extends Document,
     RegisterObject,

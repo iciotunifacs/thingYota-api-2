@@ -1,8 +1,8 @@
 import { Request, Response, Next } from "restify";
 import errors from "restify-errors";
 
-import User from "../model/user";
-import Bucket from "../model/bucket";
+import User from "../core/model/user";
+import Bucket from "../core/model/bucket";
 import { validaionBodyEmpty, trimObjctt } from "../utils/common";
 import mongoose from "mongoose";
 

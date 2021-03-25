@@ -1,5 +1,5 @@
-import User from "../model/user";
-import Device from "../model/device";
+import User from "../core/model/user";
+import Device from "../core/model/device";
 import jwt from "jsonwebtoken";
 import config from "../config/env";
 import errors from "restify-errors";

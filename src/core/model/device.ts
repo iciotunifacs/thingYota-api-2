@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document } from "mongoose";
-import ITimeStamp from "../core/shared/timestamp/Interface";
-import { DeviceObject } from "../core/device/";
+import { model, Schema, Document } from "mongoose";
+import ITimeStamp from "../shared/timestamp/Interface";
+import { DeviceObject } from "../device";
 interface DeviceDocument extends Document, DeviceObject, ITimeStamp {}
 const deviceSchemme: Schema = new Schema(
   {
@@ -41,4 +41,4 @@ const deviceSchemme: Schema = new Schema(
   }
 );
 
-export default mongoose.model<DeviceDocument>("Device", deviceSchemme);
+export default model<DeviceDocument>("Device", deviceSchemme);

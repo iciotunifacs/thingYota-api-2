@@ -1,6 +1,6 @@
 import Mongoose, { Schema, Document } from "mongoose";
-import ITimeStamp from "../core/shared/timestamp/Interface";
-import { BucketObject } from "../core/bucket/";
+import ITimeStamp from "../shared/timestamp/Interface";
+import { BucketObject } from "../bucket";
 
 export interface DeviceDocument extends Document, BucketObject, ITimeStamp {}
 const bucketSchema = new Schema(

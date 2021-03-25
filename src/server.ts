@@ -7,10 +7,6 @@ const mqttHandler = require("./controller/mqtt");
 const io = socketIo.listen(server.server);
 const env = require("./config/env");
 
-interface CustonRequest extends Request {
-  io: any;
-}
-
 // server.use((req: CustonRequest, res: Response, next: Next) => {
 //   // socket
 //   req.io = io;

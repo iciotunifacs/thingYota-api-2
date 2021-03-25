@@ -1,4 +1,4 @@
-const History = require("../model/history");
+const History = require("../core/model/history");
 const errors = require("restify-errors");
 
 /**
@@ -98,19 +98,19 @@ const delOne = async (req, res, next) => {
 
   try {
     const data = await History.findById(id).populate("device_parent");
-    await data.deleteOne()
-    return res.send(200,{
+    await data.deleteOne();
+    return res.send(200, {
       data,
-      res: true
+      res: true,
     });
   } catch (error) {
     return res.send(new errors.InternalServerError(`${error}`));
   }
-}
+};
 
 module.exports = {
   findOne,
   find,
   mqttCreate,
-  delOne
+  delOne,
 };

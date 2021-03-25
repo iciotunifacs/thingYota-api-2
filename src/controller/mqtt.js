@@ -3,7 +3,7 @@ const semsorHandler = require("../helpers/mqtt/sensor");
 const actorHandler = require("../helpers/mqtt/actor");
 const { mqttCreate } = require("../controller/history");
 
-const Device = require('../model/device');
+const Device = require("../core/model/device");
 
 module.exports = async (payload, socket) => {
   let data, from;
@@ -22,18 +22,18 @@ module.exports = async (payload, socket) => {
           },
           data: {
             event: payload.event,
-            value: data.value ? data.value : true
-          }
-        }
+            value: data.value ? data.value : true,
+          },
+        };
         mqttCreate(historyCreate);
       }
       break;
     case "Sensor":
-      data =await semsorHandler(payload, socket);
+      data = await semsorHandler(payload, socket);
       if (data) {
         from = await Device.findOne({
-          mac_addres: payload.mac_addres
-        })
+          mac_addres: payload.mac_addres,
+        });
         const historyCreate = {
           from: {
             type: payload.from,
@@ -45,9 +45,9 @@ module.exports = async (payload, socket) => {
           },
           data: {
             event: payload.event,
-            value: data.value ? data.value : true
-          }
-        }
+            value: data.value ? data.value : true,
+          },
+        };
         mqttCreate(historyCreate);
       }
       break;
@@ -55,8 +55,8 @@ module.exports = async (payload, socket) => {
       data = await actorHandler(payload, socket);
       if (data) {
         from = await Device.findOne({
-          mac_addres: payload.mac_addres
-        })
+          mac_addres: payload.mac_addres,
+        });
         const historyCreate = {
           from: {
             type: payload.from,
@@ -68,9 +68,9 @@ module.exports = async (payload, socket) => {
           },
           data: {
             event: payload.event,
-            value: data.value ? data.value : true
-          }
-        }
+            value: data.value ? data.value : true,
+          },
+        };
         mqttCreate(historyCreate);
       }
       break;

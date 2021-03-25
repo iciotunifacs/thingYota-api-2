@@ -1,8 +1,8 @@
 const constants = require("./constants");
 
-const Sensor = require("../../model/sensor");
-const Device = require("../../model/device");
-const Bucket = require("../../model/bucket");
+const Sensor = require("../../core/model/sensor");
+const Device = require("../../core/model/device");
+const Bucket = require("../../core/model/bucket");
 
 const { mockBuckets } = require("../../utils/socket");
 const { emit } = require("../socket/bucket");
@@ -20,7 +20,7 @@ const updateSensor = async (payload, socket) => {
     }
 
     if (payload.Sensor.value && payload.Sensor.value.entity) {
-      if (payload.Sensor.value.entity == 'boolean') {
+      if (payload.Sensor.value.entity == "boolean") {
         switch (payload.Sensor.value.data) {
           case 1:
             payload.Sensor.value.data = true;
@@ -34,22 +34,26 @@ const updateSensor = async (payload, socket) => {
     }
 
     if (sensor) {
-      const data = await sensor.update(
-        { value: payload.Sensor.value },
-        {
-          upsert: true,
-          useFindAndModify: false,
-          new: true,
-        }
-      ).exec();
+      const data = await sensor
+        .update(
+          { value: payload.Sensor.value },
+          {
+            upsert: true,
+            useFindAndModify: false,
+            new: true,
+          }
+        )
+        .exec();
 
       const buckets = await Bucket.find({
         Sensors: {
           $in: {
-            _id: sensor._id
-          }
+            _id: sensor._id,
+          },
         },
-      }).populate("Sensors").populate("Actors");
+      })
+        .populate("Sensors")
+        .populate("Actors");
 
       if (buckets.length > 0) {
         buckets.forEach((el) =>
@@ -95,7 +99,7 @@ const createSensor = async (payload, socket) => {
       });
     }
 
-    if (!device.Sensors.find(item => item == sensor.id)) {
+    if (!device.Sensors.find((item) => item == sensor.id)) {
       await device.update({
         $push: {
           Sensors: sensor._id,

@@ -1,6 +1,6 @@
 import { model, Document, Schema } from "mongoose";
-import ITimeStamp from "../core/shared/timestamp/Interface";
-import { SensorObject } from "../core/sensor/";
+import ITimeStamp from "../shared/timestamp/Interface";
+import { SensorObject } from "../sensor";
 export interface SensorDocument extends SensorObject, ITimeStamp, Document {}
 const sensorSchema = new Schema(
   {

@@ -1,7 +1,7 @@
-const Device = require("../model/device");
+const Device = require("../core/model/device");
 const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
 const errors = require("restify-errors");
-const { populate } = require("../model/device");
+const { populate } = require("../core/model/device");
 
 /**
  * @description Get all Devices in database
@@ -11,7 +11,7 @@ const { populate } = require("../model/device");
  */
 const find = async (req, res, next) => {
   const { limit, populate } = req.query;
-  const offset = (parseInt(req.query.offset)) * limit || 0;
+  const offset = parseInt(req.query.offset) * limit || 0;
   try {
     let data;
     if (populate) {

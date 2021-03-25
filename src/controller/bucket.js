@@ -1,7 +1,7 @@
-const Bucket = require("../model/bucket");
-const Sensor = require("../model/sensor");
-const Actor = require("../model/actor");
-const History = require("../model/history");
+const Bucket = require("../core/model/bucket");
+const Sensor = require("../core/model/sensor");
+const Actor = require("../core/model/actor");
+const History = require("../core/model/history");
 const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
 const errors = require("restify-errors");
 
@@ -109,7 +109,8 @@ const create = async (req, res, next) => {
 
     const data = await (await Bucket.create(trimObjctt(sendData)))
       .populate("Sensors")
-      .populate("Actors").execPopulate();
+      .populate("Actors")
+      .execPopulate();
 
     let historyData = {
       To: data._id,

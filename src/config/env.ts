@@ -1,4 +1,4 @@
-const config = {
+export const config = {
   secret: {
     guest: process.env.SECRET_GUEST,
     user: process.env.SECRET_USER,

@@ -1,16 +1,16 @@
 import { Router } from "restify-router";
 
 // controllers
-const {
+import {
   find,
   findOne,
   create,
   put,
   createRelationShip,
   deleteRelationShip,
-} = require("../controller/user");
+} from "../controller/user";
 
-const { authUser } = require("../middleware/auth");
+import { authUser } from "../middleware/auth";
 
 const router = new Router();
 // endpoints
