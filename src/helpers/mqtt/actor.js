@@ -1,11 +1,11 @@
-const constants = require("./constants");
+const constants = require('./constants');
 
-const Actor = require("../../core/model/actor");
-const Device = require("../../core/model/device");
-const Bucket = require("../../core/model/bucket");
+const Actor = require('../../core/model/actor');
+const Device = require('../../core/model/device');
+const Bucket = require('../../core/model/bucket');
 
-const { mockBuckets } = require("../../utils/socket");
-const { emit } = require("../socket/bucket");
+const { mockBuckets } = require('../../utils/socket');
+const { emit } = require('../socket/bucket');
 
 const updateActor = async (payload, socket) => {
 	try {
@@ -22,15 +22,15 @@ const updateActor = async (payload, socket) => {
 		let data;
 
 		if (payload.Actor.value && payload.Actor.value.entity) {
-			if (payload.Actor.value.entity == "boolean") {
+			if (payload.Actor.value.entity == 'boolean') {
 				switch (payload.Actor.value.data) {
-					case 1:
-						payload.Actor.value.data = true;
-						break;
-					case 0:
-					default:
-						payload.Actor.value.data = false;
-						break;
+				case 1:
+					payload.Actor.value.data = true;
+					break;
+				case 0:
+				default:
+					payload.Actor.value.data = false;
+					break;
 				}
 			}
 		}
@@ -52,12 +52,12 @@ const updateActor = async (payload, socket) => {
 					},
 				},
 			})
-				.populate("Actors")
-				.populate("Actors");
+				.populate('Actors')
+				.populate('Actors');
 
 			if (buckets.length > 0) {
 				buckets.forEach((el) => {
-					return emit(mockBuckets(el, payload.Actor, "Actors"), socket);
+					return emit(mockBuckets(el, payload.Actor, 'Actors'), socket);
 				});
 			}
 		}
@@ -88,7 +88,7 @@ const createActor = async (payload, socket) => {
 		let actor;
 
 		if (payload.Actor.value && payload.Actor.value.data) {
-			if (payload.Actor.value.entity == "boolean") {
+			if (payload.Actor.value.entity == 'boolean') {
 				if (payload.Actor.value.data == 0) {
 					payload.Actor.value.data = false;
 				} else {
@@ -130,11 +130,11 @@ const createActor = async (payload, socket) => {
 
 module.exports = (payload, socket) => {
 	switch (payload.event) {
-		case constants.Actor.CREATE:
-			return createActor(payload, socket);
-		case constants.Actor.UPDATE:
-			return updateActor(payload, socket);
-		default:
-			return null;
+	case constants.Actor.CREATE:
+		return createActor(payload, socket);
+	case constants.Actor.UPDATE:
+		return updateActor(payload, socket);
+	default:
+		return null;
 	}
 };

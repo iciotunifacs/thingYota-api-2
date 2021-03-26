@@ -1,10 +1,10 @@
-import { Request, Response, Next } from "restify";
-import errors from "restify-errors";
+import { Request, Response, Next } from 'restify';
+import errors from 'restify-errors';
 
-import User from "../core/model/user";
-import Bucket from "../core/model/bucket";
-import { validaionBodyEmpty, trimObjctt } from "../utils/common";
-import mongoose from "mongoose";
+import User from '../core/model/user';
+import Bucket from '../core/model/bucket';
+import { validaionBodyEmpty, trimObjctt } from '../utils/common';
+import mongoose from 'mongoose';
 
 /**
  * @description Get alll users use queeryparans to filter then
@@ -24,7 +24,7 @@ export const find = async (req: Request, res: Response, next: Next) => {
 		const total = await User.estimatedDocumentCount();
 
 		if (offset >= total && total != 0)
-			return res.send(new errors.LengthRequiredError("out of rnge"));
+			return res.send(new errors.LengthRequiredError('out of rnge'));
 
 		return res.send(200, {
 			data: data,
@@ -44,7 +44,7 @@ export const find = async (req: Request, res: Response, next: Next) => {
  */
 export const create = async (req: Request, res: Response, next: Next) => {
 	if (!req.body) {
-		return res.send(new errors.InvalidArgumentError("body is empty"));
+		return res.send(new errors.InvalidArgumentError('body is empty'));
 	}
 
 	try {
@@ -75,7 +75,7 @@ export const create = async (req: Request, res: Response, next: Next) => {
 export const findOne = async (req: Request, res: Response, next: Next) => {
 	const { id } = req.params;
 	if (!id) {
-		return res.send(new errors.InvalidArgumentError("id not found"));
+		return res.send(new errors.InvalidArgumentError('id not found'));
 	}
 
 	try {
@@ -91,7 +91,7 @@ export const findOne = async (req: Request, res: Response, next: Next) => {
 		});
 	} catch (error) {
 		return res.send(
-			new errors.InternalServerError(`An database error has occoured`)
+			new errors.InternalServerError('An database error has occoured')
 		);
 	}
 };
@@ -104,14 +104,14 @@ export const findOne = async (req: Request, res: Response, next: Next) => {
  */
 export const put = async (req: Request, res: Response, next: Next) => {
 	if (!req.body)
-		return res.send(new errors.InvalidArgumentError("body is empty"));
+		return res.send(new errors.InvalidArgumentError('body is empty'));
 
 	const { id } = req.params;
 	const { type, status, username, first_name, last_name, email } = req.body;
 
-	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
+	if (!id) return res.send(new errors.InvalidArgumentError('id not found'));
 
-	let nextParans = trimObjctt({
+	const nextParans = trimObjctt({
 		type,
 		status,
 		username,
@@ -147,17 +147,17 @@ export const createRelationShip = async (
 	next: Next
 ) => {
 	if (req.body == null || req.body == undefined)
-		return res.send(new errors.InvalidArgumentError("body is empty"));
+		return res.send(new errors.InvalidArgumentError('body is empty'));
 
 	const { id } = req.params;
 
-	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
+	if (!id) return res.send(new errors.InvalidArgumentError('id not found'));
 
-	const bodyNotFound = validaionBodyEmpty(req.body, ["to", "type"]);
+	const bodyNotFound = validaionBodyEmpty(req.body, ['to', 'type']);
 
 	if (bodyNotFound.length > 0)
 		return res.send(
-			new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
+			new errors.NotFoundError(`not found params : ${bodyNotFound.join(',')}`)
 		);
 
 	const { to, type } = req.body;
@@ -171,35 +171,35 @@ export const createRelationShip = async (
 
 	try {
 		switch (type) {
-			case "Bucket":
-			case "bucket":
-				dataTo = await Bucket.findById(to.id);
+		case 'Bucket':
+		case 'bucket':
+			dataTo = await Bucket.findById(to.id);
 
-				if (!dataTo)
-					return res.send(
-						new errors.NotFoundError(
-							`Bucket._id ${JSON.stringify(to.id)} not found`
-						)
-					);
-
-				data = await User.findByIdAndUpdate(
-					id,
-					{
-						$push: {
-							Buckets: dataTo._id,
-						},
-					},
-					{
-						new: true,
-						upsert: true,
-						setDefaultsOnInsert: true,
-					}
-				);
-				break;
-			default:
+			if (!dataTo)
 				return res.send(
-					new errors.InvalidContentError(`type ${type} is not valid.`)
+					new errors.NotFoundError(
+						`Bucket._id ${JSON.stringify(to.id)} not found`
+					)
 				);
+
+			data = await User.findByIdAndUpdate(
+				id,
+				{
+					$push: {
+						Buckets: dataTo._id,
+					},
+				},
+				{
+					new: true,
+					upsert: true,
+					setDefaultsOnInsert: true,
+				}
+			);
+			break;
+		default:
+			return res.send(
+				new errors.InvalidContentError(`type ${type} is not valid.`)
+			);
 		}
 
 		return res.send(200, {
@@ -222,17 +222,17 @@ export const deleteRelationShip = async (
 	next: Next
 ) => {
 	if (req.body == null || req.body == undefined)
-		return res.send(new errors.InvalidArgumentError("body is empty"));
+		return res.send(new errors.InvalidArgumentError('body is empty'));
 
 	const { id } = req.params;
 
-	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
+	if (!id) return res.send(new errors.InvalidArgumentError('id not found'));
 
-	const bodyNotFound = validaionBodyEmpty(req.body, ["to", "type"]);
+	const bodyNotFound = validaionBodyEmpty(req.body, ['to', 'type']);
 
 	if (bodyNotFound.length > 0)
 		return res.send(
-			new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
+			new errors.NotFoundError(`not found params : ${bodyNotFound.join(',')}`)
 		);
 
 	const { to, type } = req.body;
@@ -247,31 +247,31 @@ export const deleteRelationShip = async (
 
 	try {
 		switch (type) {
-			case "Bucket":
-			case "bucket":
-				dataTo = await Bucket.findById(to.id);
+		case 'Bucket':
+		case 'bucket':
+			dataTo = await Bucket.findById(to.id);
 
-				if (!dataTo)
-					return res.send(
-						new errors.NotFoundError(
-							`Bucket._id ${JSON.stringify(to.id)} not found`
-						)
-					);
-
-				data = await User.findByIdAndUpdate(
-					id,
-					{
-						$pull: {
-							Buckets: dataTo._id,
-						},
-					},
-					{ new: true }
-				);
-				break;
-			default:
+			if (!dataTo)
 				return res.send(
-					new errors.InvalidContentError(`type ${type} is not valid.`)
+					new errors.NotFoundError(
+						`Bucket._id ${JSON.stringify(to.id)} not found`
+					)
 				);
+
+			data = await User.findByIdAndUpdate(
+				id,
+				{
+					$pull: {
+						Buckets: dataTo._id,
+					},
+				},
+				{ new: true }
+			);
+			break;
+		default:
+			return res.send(
+				new errors.InvalidContentError(`type ${type} is not valid.`)
+			);
 		}
 
 		return res.send(200, {

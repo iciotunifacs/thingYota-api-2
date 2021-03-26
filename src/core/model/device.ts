@@ -1,6 +1,6 @@
-import { model, Schema, Document } from "mongoose";
-import ITimeStamp from "../shared/timestamp/Interface";
-import { DeviceObject } from "../device";
+import { model, Schema, Document } from 'mongoose';
+import ITimeStamp from '../shared/timestamp/Interface';
+import { DeviceObject } from '../device';
 interface DeviceDocument extends Document, DeviceObject, ITimeStamp {}
 const deviceSchemme: Schema = new Schema(
 	{
@@ -19,13 +19,13 @@ const deviceSchemme: Schema = new Schema(
 		Sensors: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: "Sensor",
+				ref: 'Sensor',
 			},
 		],
 		Actors: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: "Actor",
+				ref: 'Actor',
 			},
 		],
 		status: {
@@ -35,10 +35,10 @@ const deviceSchemme: Schema = new Schema(
 	},
 	{
 		timestamps: {
-			createdAt: "created_at",
-			updatedAt: "last_change",
+			createdAt: 'created_at',
+			updatedAt: 'last_change',
 		},
 	}
 );
 
-export default model<DeviceDocument>("Device", deviceSchemme);
+export default model<DeviceDocument>('Device', deviceSchemme);

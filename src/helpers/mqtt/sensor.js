@@ -1,11 +1,11 @@
-const constants = require("./constants");
+const constants = require('./constants');
 
-const Sensor = require("../../core/model/sensor");
-const Device = require("../../core/model/device");
-const Bucket = require("../../core/model/bucket");
+const Sensor = require('../../core/model/sensor');
+const Device = require('../../core/model/device');
+const Bucket = require('../../core/model/bucket');
 
-const { mockBuckets } = require("../../utils/socket");
-const { emit } = require("../socket/bucket");
+const { mockBuckets } = require('../../utils/socket');
+const { emit } = require('../socket/bucket');
 
 const updateSensor = async (payload, socket) => {
 	try {
@@ -20,15 +20,15 @@ const updateSensor = async (payload, socket) => {
 		}
 
 		if (payload.Sensor.value && payload.Sensor.value.entity) {
-			if (payload.Sensor.value.entity == "boolean") {
+			if (payload.Sensor.value.entity == 'boolean') {
 				switch (payload.Sensor.value.data) {
-					case 1:
-						payload.Sensor.value.data = true;
-						break;
-					case 0:
-					default:
-						payload.Sensor.value.data = false;
-						break;
+				case 1:
+					payload.Sensor.value.data = true;
+					break;
+				case 0:
+				default:
+					payload.Sensor.value.data = false;
+					break;
 				}
 			}
 		}
@@ -52,12 +52,12 @@ const updateSensor = async (payload, socket) => {
 					},
 				},
 			})
-				.populate("Sensors")
-				.populate("Actors");
+				.populate('Sensors')
+				.populate('Actors');
 
 			if (buckets.length > 0) {
 				buckets.forEach((el) =>
-					emit(mockBuckets(el, payload.Sensor, "Sensors"), socket)
+					emit(mockBuckets(el, payload.Sensor, 'Sensors'), socket)
 				);
 			}
 		}
@@ -120,13 +120,13 @@ const createSensor = async (payload, socket) => {
 
 module.exports = (payload, socket) => {
 	switch (payload.event) {
-		case constants.Sensor.CREATE:
-			createSensor(payload, socket);
-			break;
-		case constants.Sensor.UPDATE:
-			updateSensor(payload, socket);
-			break;
-		default:
-			break;
+	case constants.Sensor.CREATE:
+		createSensor(payload, socket);
+		break;
+	case constants.Sensor.UPDATE:
+		updateSensor(payload, socket);
+		break;
+	default:
+		break;
 	}
 };

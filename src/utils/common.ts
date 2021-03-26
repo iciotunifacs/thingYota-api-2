@@ -7,7 +7,7 @@ export const trimObjctt = (obj: any) => {
 	const val: { [key: string]: any } = {};
 	for (const key in obj) {
 		const temp = obj[key];
-		if (temp !== null || temp !== undefined || temp !== {} || temp !== "") {
+		if (temp !== null || temp !== undefined || temp !== {} || temp !== '') {
 			val[key] = temp;
 		}
 	}

@@ -1,3 +1,3 @@
-import { ActorObject } from "./ActorObject";
+import { ActorObject } from './ActorObject';
 
 export { ActorObject };

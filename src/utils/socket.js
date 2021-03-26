@@ -1,4 +1,4 @@
-const mockBuckets = (el, data, entity = "Sensors") => {
+const mockBuckets = (el, data, entity = 'Sensors') => {
 	return {
 		url: `/Bucket_${el._id}`,
 		payload: {
@@ -6,7 +6,7 @@ const mockBuckets = (el, data, entity = "Sensors") => {
 			Actor: data,
 			Bucket: el,
 		},
-		event: "updated",
+		event: 'updated',
 	};
 };
 

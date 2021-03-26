@@ -1,3 +1,3 @@
-import { HistoryObject } from "./HistoryObject";
+import { HistoryObject } from './HistoryObject';
 
 export { HistoryObject };

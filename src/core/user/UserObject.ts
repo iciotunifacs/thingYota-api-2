@@ -1,5 +1,5 @@
-import { BucketObject } from "../bucket/";
-import { PasswordObject } from "./HashPassword";
+import { BucketObject } from '../bucket/';
+import { PasswordObject } from './HashPassword';
 export interface UserObject {
 	first_name: string;
 	last_name: string;

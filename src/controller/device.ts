@@ -1,7 +1,7 @@
-import { Request, Response, Next } from "restify";
-import Device from "../core/model/device";
-import { validaionBodyEmpty, trimObjctt } from "../utils/common";
-import errors from "restify-errors";
+import { Request, Response, Next } from 'restify';
+import Device from '../core/model/device';
+import { validaionBodyEmpty, trimObjctt } from '../utils/common';
+import errors from 'restify-errors';
 
 /**
  * @description Get all Devices in database
@@ -18,8 +18,8 @@ export const find = async (req: Request, res: Response, next: Next) => {
 			data = await Device.find()
 				.limit(parseInt(limit) || 0)
 				.skip(offset ?? 0)
-				.populate("Sensors")
-				.populate("Actors")
+				.populate('Sensors')
+				.populate('Actors')
 				.exec();
 		} else {
 			data = await Device.find()
@@ -31,7 +31,7 @@ export const find = async (req: Request, res: Response, next: Next) => {
 		const total = await Device.estimatedDocumentCount();
 
 		if (offset >= total && total != 0)
-			return res.send(new errors.LengthRequiredError("out of rnge"));
+			return res.send(new errors.LengthRequiredError('out of rnge'));
 
 		return res.send(200, {
 			data: data,
@@ -53,14 +53,14 @@ export const findOne = async (req: Request, res: Response, next: Next) => {
 	const { populate } = req.query;
 	const { id } = req.params;
 
-	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
+	if (!id) return res.send(new errors.InvalidArgumentError('id not found'));
 
 	try {
 		let data;
 		if (populate) {
 			data = await Device.findById(id)
-				.populate("Sensors")
-				.populate("Actrors")
+				.populate('Sensors')
+				.populate('Actrors')
 				.exec();
 		} else {
 			data = await Device.findById(id);
@@ -89,18 +89,18 @@ export const findOne = async (req: Request, res: Response, next: Next) => {
  */
 export const create = async (req: Request, res: Response, next: Next) => {
 	if (!req.body) {
-		return res.send(new errors.InvalidArgumentError("body is empty"));
+		return res.send(new errors.InvalidArgumentError('body is empty'));
 	}
 
 	const bodyNotFound = validaionBodyEmpty(req.body, [
-		"name",
-		"type",
-		"macAddress",
+		'name',
+		'type',
+		'macAddress',
 	]);
 
 	if (bodyNotFound.length > 0) {
 		return res.send(
-			new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
+			new errors.NotFoundError(`not found params : ${bodyNotFound.join(',')}`)
 		);
 	}
 
@@ -128,7 +128,7 @@ export const create = async (req: Request, res: Response, next: Next) => {
 		}
 		console.log(error);
 		return res.send(
-			new errors.InternalServerError(`An database error has occoured`)
+			new errors.InternalServerError('An database error has occoured')
 		);
 	}
 };
@@ -141,12 +141,12 @@ export const create = async (req: Request, res: Response, next: Next) => {
  */
 export const put = async (req: Request, res: Response, next: Next) => {
 	if (!req.body) {
-		return res.send(new errors.InvalidArgumentError("body is empty"));
+		return res.send(new errors.InvalidArgumentError('body is empty'));
 	}
 	const { id } = req.params;
 
 	if (!id) {
-		return res.send(new errors.InvalidArgumentError("id not found"));
+		return res.send(new errors.InvalidArgumentError('id not found'));
 	}
 
 	const { name, type, mac_addres, status } = req.body;
