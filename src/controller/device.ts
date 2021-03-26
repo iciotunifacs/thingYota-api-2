@@ -1,7 +1,7 @@
-const Device = require("../core/model/device");
-const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
-const errors = require("restify-errors");
-const { populate } = require("../core/model/device");
+import { Request, Response, Next } from "restify";
+import Device from "../core/model/device";
+import { validaionBodyEmpty, trimObjctt } from "../utils/common";
+import errors from "restify-errors";
 
 /**
  * @description Get all Devices in database
@@ -9,7 +9,7 @@ const { populate } = require("../core/model/device");
  * @param {Response} res
  * @param {*} next
  */
-const find = async (req, res, next) => {
+export const find = async (req: Request, res: Response, next: Next) => {
   const { limit, populate } = req.query;
   const offset = parseInt(req.query.offset) * limit || 0;
   try {
@@ -17,14 +17,14 @@ const find = async (req, res, next) => {
     if (populate) {
       data = await Device.find()
         .limit(parseInt(limit) || 0)
-        .skip(parseInt(offset) || 0)
+        .skip(offset ?? 0)
         .populate("Sensors")
         .populate("Actors")
         .exec();
     } else {
       data = await Device.find()
-        .limit(parseInt(limit) || 0)
-        .skip(parseInt(offset) || 0)
+        .limit(parseInt(limit) ?? 0)
+        .skip(offset ?? 0)
         .exec();
     }
 
@@ -49,7 +49,7 @@ const find = async (req, res, next) => {
  * @requires params.id
  * @param {*} next
  */
-const findOne = async (req, res, next) => {
+export const findOne = async (req: Request, res: Response, next: Next) => {
   const { populate } = req.query;
   const { id } = req.params;
 
@@ -66,8 +66,9 @@ const findOne = async (req, res, next) => {
       data = await Device.findById(id);
     }
 
-    if (!data || data.length == 0)
+    if (!data) {
       return res.send(new errors.NotFoundError(`Device._id ${id} not found`));
+    }
 
     return res.send(200, {
       data: data,
@@ -86,29 +87,33 @@ const findOne = async (req, res, next) => {
  * @requires body.type
  * @requires body.mac_addres
  */
-const create = async (req, res, next) => {
-  if (req.body == null || req.body == undefined)
+export const create = async (req: Request, res: Response, next: Next) => {
+  if (!req.body) {
     return res.send(new errors.InvalidArgumentError("body is empty"));
+  }
 
   const bodyNotFound = validaionBodyEmpty(req.body, [
     "name",
     "type",
-    "mac_addres",
+    "macAddress",
   ]);
 
-  if (bodyNotFound.length > 0)
+  if (bodyNotFound.length > 0) {
     return res.send(
       new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
     );
+  }
 
-  const { name, type, mac_addres } = req.body;
+  const { name, type, macAddress } = req.body;
 
   try {
     const data = await Device.create({
       name,
       type,
-      mac_addres,
+      macAddress,
     });
+
+    await data.save();
 
     return res.send(200, {
       data: data,
@@ -121,6 +126,7 @@ const create = async (req, res, next) => {
         )
       );
     }
+    console.log(error);
     return res.send(
       new errors.InternalServerError(`An database error has occoured`)
     );
@@ -133,13 +139,16 @@ const create = async (req, res, next) => {
  * @param {Response} res
  * @param {*} send
  */
-const put = async (req, res, send) => {
-  if (req.body == null || req.body == undefined)
+export const put = async (req: Request, res: Response, next: Next) => {
+  if (!req.body) {
     return res.send(new errors.InvalidArgumentError("body is empty"));
-
-  if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
-
+  }
   const { id } = req.params;
+
+  if (!id) {
+    return res.send(new errors.InvalidArgumentError("id not found"));
+  }
+
   const { name, type, mac_addres, status } = req.body;
 
   const sendParans = trimObjctt({
@@ -155,16 +164,10 @@ const put = async (req, res, send) => {
       upsert: true,
       setDefaultsOnInsert: true,
     });
-    if (!data)
+    if (!data) {
       return res.send(new errors.NotFoundError(`Device ${id} not found`));
+    }
   } catch (error) {
     return res.send(new errors.InternalServerError(`${error}`));
   }
-};
-
-module.exports = {
-  findOne,
-  find,
-  create,
-  put,
 };

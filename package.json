@@ -11,7 +11,7 @@
     "dev-docker": "cross-env NODE_ENV=development-docker ./node_modules/nodemon/bin/nodemon.js bin/server",
     "start": "cross-env NODE_ENV=production node bin/server",
     "build": "tsc",
-    "tsc:watch": "tsc --watch"
+    "tsc:watch": "tsc --build tsconfig.json --watch"
   },
   "author": "victorfeernandesraton",
   "license": "MIT",
@@ -35,7 +35,7 @@
     "restify-cors-middleware": "^1.1.1",
     "restify-errors": "^8.0.2",
     "restify-plugins": "^1.6.0",
-    "restify-router": "^0.5.1",
+    "restify-router": "^0.6.2",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
@@ -44,10 +44,13 @@
     "@types/restify": "^8.5.0",
     "@types/restify-cors-middleware": "^1.0.1",
     "@types/restify-plugins": "^1.5.12",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
     "cross-env": "^7.0.3",
+    "eslint": "^7.22.0",
     "jest": "^26.6.3",
     "nodemon": "^2.0.4",
-    "prettier": "^2.0.5",
+    "prettier": "^2.2.1",
     "ts-jest": "^26.5.4",
     "typescript": "^4.2.2"
   }
