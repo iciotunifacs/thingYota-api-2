@@ -1,3 +1,3 @@
-import { RegisterObject } from './RegisterObject';
+import { RegisterObject } from "./RegisterObject";
 
 export { RegisterObject };

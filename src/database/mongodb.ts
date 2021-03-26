@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import config from '../config/env';
+import mongoose from "mongoose";
+import config from "../config/env";
 
 const url = config.db.username
 	? `${config.db.url}://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.database}`

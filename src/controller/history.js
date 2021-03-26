@@ -1,5 +1,5 @@
-const History = require('../core/model/history');
-const errors = require('restify-errors');
+const History = require("../core/model/history");
+const errors = require("restify-errors");
 
 /**
  * @description Get all histories in database
@@ -16,15 +16,15 @@ const find = async (req, res, send) => {
 		const data = await History.find(filter)
 			.limit(parseInt(limit) || 0)
 			.skip(parseInt(offset) || 0)
-			.populate('From')
-			.populate('To')
+			.populate("From")
+			.populate("To")
 			.sort({ created_at: -1 })
 			.exec();
 
 		const total = await History.estimatedDocumentCount();
 
 		if (offset >= total && total != 0)
-			return res.send(new errors.LengthRequiredError('out of rnge'));
+			return res.send(new errors.LengthRequiredError("out of rnge"));
 
 		return res.send(200, {
 			data: data,
@@ -45,13 +45,13 @@ const find = async (req, res, send) => {
 const findOne = async (req, res, next) => {
 	const { id } = req.params;
 
-	if (!id) return res.send(new errors.InvalidArgumentError('id not found'));
+	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 
 	try {
-		const data = await History.findById(id).populate('device_parent');
+		const data = await History.findById(id).populate("device_parent");
 
 		if (!data || data.length == 0)
-			return res.send(new errors.NotFoundError('Sensor not found'));
+			return res.send(new errors.NotFoundError("Sensor not found"));
 
 		res.send(200, {
 			res: true,
@@ -94,10 +94,10 @@ const mqttCreate = async (payload) => {
 const delOne = async (req, res, next) => {
 	const { id } = req.params;
 
-	if (!id) return res.send(new errors.InvalidArgumentError('id not found'));
+	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 
 	try {
-		const data = await History.findById(id).populate('device_parent');
+		const data = await History.findById(id).populate("device_parent");
 		await data.deleteOne();
 		return res.send(200, {
 			data,

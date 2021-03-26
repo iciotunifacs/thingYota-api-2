@@ -1,6 +1,6 @@
-import Mongoose, { Schema, Document } from 'mongoose';
-import ITimeStamp from '../shared/timestamp/Interface';
-import { BucketObject } from '../bucket';
+import Mongoose, { Schema, Document } from "mongoose";
+import ITimeStamp from "../shared/timestamp/Interface";
+import { BucketObject } from "../bucket";
 
 export interface DeviceDocument extends Document, BucketObject, ITimeStamp {}
 const bucketSchema = new Schema(
@@ -12,22 +12,22 @@ const bucketSchema = new Schema(
 		Sensors: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: 'Sensor',
+				ref: "Sensor",
 			},
 		],
 		Actors: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: 'Actor',
+				ref: "Actor",
 			},
 		],
 		type: {
 			type: String,
-			default: 'wather-bucket',
+			default: "wather-bucket",
 		},
 		volume: {
 			type: Object,
-			default: { data: { value: 0, unity: 'L' } },
+			default: { data: { value: 0, unity: "L" } },
 		},
 		status: {
 			type: Boolean,
@@ -36,10 +36,10 @@ const bucketSchema = new Schema(
 	},
 	{
 		timestamps: {
-			createdAt: 'created_at',
-			updatedAt: 'last_change',
+			createdAt: "created_at",
+			updatedAt: "last_change",
 		},
 	}
 );
 
-export default Mongoose.model<DeviceDocument>('Bucket', bucketSchema);
+export default Mongoose.model<DeviceDocument>("Bucket", bucketSchema);

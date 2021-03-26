@@ -1,3 +1,3 @@
-import { DeviceObject, DeviceType } from './DeviceObject';
+import { DeviceObject, DeviceType } from "./DeviceObject";
 
 export { DeviceObject, DeviceType };

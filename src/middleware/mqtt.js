@@ -1,5 +1,5 @@
-const errors = require('restify-errors');
-const mqttClient = require('../services/mqtt-service');
+const errors = require("restify-errors");
+const mqttClient = require("../services/mqtt-service");
 
 const sendEmmiter = (req, res, next) => {
 	const { dispensor } = req.locals;

@@ -1,6 +1,6 @@
-import { model, Schema, Document } from 'mongoose';
-import { UserObject, hash, generateSalt } from '../user';
-import ITimeStamps from '../shared/timestamp/Interface';
+import { model, Schema, Document } from "mongoose";
+import { UserObject, hash, generateSalt } from "../user";
+import ITimeStamps from "../shared/timestamp/Interface";
 
 export interface UserDocument extends UserObject, ITimeStamps, Document {}
 const userSchema = new Schema(
@@ -29,7 +29,7 @@ const userSchema = new Schema(
 		},
 		type: {
 			type: String,
-			default: 'client',
+			default: "client",
 		},
 		status: {
 			type: Boolean,
@@ -38,27 +38,27 @@ const userSchema = new Schema(
 		Buckets: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: 'Bucket',
+				ref: "Bucket",
 			},
 		],
 	},
 	{
 		timestamps: {
-			createdAt: 'created_at',
-			updatedAt: 'last_change',
+			createdAt: "created_at",
+			updatedAt: "last_change",
 		},
 	}
 );
 
 // Encriptador de senha
-userSchema.pre<UserDocument>(['updateOne', 'save'], function (next) {
+userSchema.pre<UserDocument>(["updateOne", "save"], function (next) {
 	// alteração dos valores
 	const salt = generateSalt(10);
-	if (salt.tag == 'left') {
+	if (salt.tag == "left") {
 		next(salt.value);
 	} else {
 		const newpassword = hash(this?.password?.hash_password, salt.value);
-		if (newpassword.tag == 'left') {
+		if (newpassword.tag == "left") {
 			next(newpassword.value);
 		} else {
 			this.password = newpassword.value;
@@ -67,4 +67,4 @@ userSchema.pre<UserDocument>(['updateOne', 'save'], function (next) {
 	next();
 });
 
-export default model<UserDocument>('User', userSchema);
+export default model<UserDocument>("User", userSchema);

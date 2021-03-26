@@ -1,6 +1,6 @@
-import { model, Document, Schema } from 'mongoose';
-import ITimeStamp from '../shared/timestamp/Interface';
-import { SensorObject } from '../sensor';
+import { model, Document, Schema } from "mongoose";
+import ITimeStamp from "../shared/timestamp/Interface";
+import { SensorObject } from "../sensor";
 export interface SensorDocument extends SensorObject, ITimeStamp, Document {}
 const sensorSchema = new Schema(
 	{
@@ -14,16 +14,16 @@ const sensorSchema = new Schema(
 		},
 		device_parent: {
 			type: Schema.Types.ObjectId,
-			ref: 'Device',
+			ref: "Device",
 			required: true,
 		},
 		type: {
 			type: String,
-			default: 'wather-sensor',
+			default: "wather-sensor",
 		},
 		value: {
 			type: Object,
-			default: { data: true, entity: 'boolean' },
+			default: { data: true, entity: "boolean" },
 		},
 		status: {
 			type: Boolean,
@@ -32,10 +32,10 @@ const sensorSchema = new Schema(
 	},
 	{
 		timestamps: {
-			createdAt: 'created_at',
-			updatedAt: 'last_change',
+			createdAt: "created_at",
+			updatedAt: "last_change",
 		},
 	}
 );
 
-export default model<SensorDocument>('Sensor', sensorSchema);
+export default model<SensorDocument>("Sensor", sensorSchema);

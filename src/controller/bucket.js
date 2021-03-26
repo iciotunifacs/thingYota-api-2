@@ -1,9 +1,9 @@
-const Bucket = require('../core/model/bucket');
-const Sensor = require('../core/model/sensor');
-const Actor = require('../core/model/actor');
-const History = require('../core/model/history');
-const { validaionBodyEmpty, trimObjctt } = require('../utils/common');
-const errors = require('restify-errors');
+const Bucket = require("../core/model/bucket");
+const Sensor = require("../core/model/sensor");
+const Actor = require("../core/model/actor");
+const History = require("../core/model/history");
+const { validaionBodyEmpty, trimObjctt } = require("../utils/common");
+const errors = require("restify-errors");
 
 /**
  * @description Get all buckets in database
@@ -16,8 +16,8 @@ const find = async (req, res, next) => {
 	const offset = parseInt(req.query.offset) * limit || 0;
 	try {
 		const data = await Bucket.find()
-			.populate('Sensors')
-			.populate('Actors')
+			.populate("Sensors")
+			.populate("Actors")
 			.limit(parseInt(limit) || 0)
 			.skip(parseInt(offset) || 0)
 			.exec();
@@ -25,7 +25,7 @@ const find = async (req, res, next) => {
 		const total = await Bucket.estimatedDocumentCount();
 
 		if (offset >= total && total != 0)
-			return res.send(new errors.LengthRequiredError('out of rnge'));
+			return res.send(new errors.LengthRequiredError("out of rnge"));
 
 		return res.send(200, {
 			data: data,
@@ -45,11 +45,11 @@ const find = async (req, res, next) => {
  */
 const findOne = async (req, res, next) => {
 	const { id } = req.params;
-	if (!id) return res.send(new errors.InvalidArgumentError('id not found'));
+	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 	try {
 		const data = await Bucket.findById(req.params.id)
-			.populate('Sensors')
-			.populate('Actors')
+			.populate("Sensors")
+			.populate("Actors")
 			.exec();
 
 		if (!data || data.length == 0)
@@ -73,13 +73,13 @@ const findOne = async (req, res, next) => {
  */
 const create = async (req, res, next) => {
 	if (req.body == null || req.body == undefined)
-		return res.send(new errors.InvalidArgumentError('body is empty'));
+		return res.send(new errors.InvalidArgumentError("body is empty"));
 
-	const bodyNotFound = validaionBodyEmpty(req.body, ['name', 'type']);
+	const bodyNotFound = validaionBodyEmpty(req.body, ["name", "type"]);
 
 	if (bodyNotFound.length > 0)
 		return res.send(
-			new errors.NotFoundError(`not found params : ${bodyNotFound.join(',')}`)
+			new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
 		);
 
 	const { name, type, volume, Sensors, Actors } = req.body;
@@ -108,17 +108,17 @@ const create = async (req, res, next) => {
 		}
 
 		const data = await (await Bucket.create(trimObjctt(sendData)))
-			.populate('Sensors')
-			.populate('Actors')
+			.populate("Sensors")
+			.populate("Actors")
 			.execPopulate();
 
 		let historyData = {
 			To: data._id,
-			To_type: 'Bucket',
+			To_type: "Bucket",
 			data: {
-				type: 'create',
+				type: "create",
 				value: data,
-				event: 'BUCKET_CREATE',
+				event: "BUCKET_CREATE",
 			},
 		};
 
@@ -126,7 +126,7 @@ const create = async (req, res, next) => {
 		if (req.locals && req.locals.authObject) {
 			From = req.locals.authObject._id;
 			(From_type = req.locals.authObject.entity),
-			(historyData = { ...historyData, From, From_type });
+				(historyData = { ...historyData, From, From_type });
 		}
 
 		History.create({ ...historyData });
@@ -156,12 +156,12 @@ const create = async (req, res, next) => {
  */
 const put = async (req, res, send) => {
 	if (req.body == null || req.body == undefined)
-		return res.send(new errors.InvalidArgumentError('body is empty'));
+		return res.send(new errors.InvalidArgumentError("body is empty"));
 
 	const { id } = req.params;
 	const { name, type, status, volume } = req.body;
 
-	if (!id) return res.send(new errors.InvalidArgumentError('id not found'));
+	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 
 	const sendParans = trimObjctt({ name, type, status, volume });
 
@@ -179,17 +179,17 @@ const put = async (req, res, send) => {
 
 const createRelationShip = async (req, res, send) => {
 	if (req.body == null || req.body == undefined)
-		return res.send(new errors.InvalidArgumentError('body is empty'));
+		return res.send(new errors.InvalidArgumentError("body is empty"));
 
 	const { id } = req.params;
 
-	if (!id) return res.send(new errors.InvalidArgumentError('id not found'));
+	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 
-	const bodyNotFound = validaionBodyEmpty(req.body, ['to', 'type']);
+	const bodyNotFound = validaionBodyEmpty(req.body, ["to", "type"]);
 
 	if (bodyNotFound.length > 0)
 		return res.send(
-			new errors.NotFoundError(`not found params : ${bodyNotFound.join(',')}`)
+			new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
 		);
 
 	const { to, type } = req.body;
@@ -203,40 +203,40 @@ const createRelationShip = async (req, res, send) => {
 
 	try {
 		switch (type) {
-		case 'Sensor':
-		case 'sensor':
-			dataTo = await Sensor.findById(to.id);
+			case "Sensor":
+			case "sensor":
+				dataTo = await Sensor.findById(to.id);
 
-			if (!dataTo)
+				if (!dataTo)
+					return res.send(
+						new errors.NotFoundError(`Sensor._id ${to.id} not found`)
+					);
+
+				data = await Bucket.findByIdAndUpdate(id, {
+					$push: {
+						Sensors: dataTo._id,
+					},
+				});
+				break;
+			case "Actor":
+			case "actor":
+				dataTo = await Actor.findById(to.id);
+
+				if (!dataTo)
+					return res.send(
+						new errors.NotFoundError(`Sensor._id ${to.id} not found`)
+					);
+
+				data = await Bucket.findByIdAndUpdate(id, {
+					$push: {
+						Actors: dataTo._id,
+					},
+				});
+				break;
+			default:
 				return res.send(
-					new errors.NotFoundError(`Sensor._id ${to.id} not found`)
+					new errors.InvalidContentError(`type ${type} is not valid.`)
 				);
-
-			data = await Bucket.findByIdAndUpdate(id, {
-				$push: {
-					Sensors: dataTo._id,
-				},
-			});
-			break;
-		case 'Actor':
-		case 'actor':
-			dataTo = await Actor.findById(to.id);
-
-			if (!dataTo)
-				return res.send(
-					new errors.NotFoundError(`Sensor._id ${to.id} not found`)
-				);
-
-			data = await Bucket.findByIdAndUpdate(id, {
-				$push: {
-					Actors: dataTo._id,
-				},
-			});
-			break;
-		default:
-			return res.send(
-				new errors.InvalidContentError(`type ${type} is not valid.`)
-			);
 		}
 
 		return res.send(200, {

@@ -13,13 +13,13 @@
 
 // module.exports = router;
 
-import { Router } from 'restify-router';
-import { authGuest } from '../middleware/auth';
-import { create as createUser } from '../controller/user';
+import { Router } from "restify-router";
+import { authGuest } from "../middleware/auth";
+import { create as createUser } from "../controller/user";
 
 const router = new Router();
 
-router.post('/user', createUser);
+router.post("/user", createUser);
 
 router.use(authGuest);
 

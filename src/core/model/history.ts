@@ -1,6 +1,6 @@
-import { model, Schema, Document } from 'mongoose';
-import { HistoryObject } from '../history';
-import ITimeStamp from '../shared/timestamp/Interface';
+import { model, Schema, Document } from "mongoose";
+import { HistoryObject } from "../history";
+import ITimeStamp from "../shared/timestamp/Interface";
 export interface HistoryDocument extends Document, HistoryObject, ITimeStamp {}
 
 const HistoryScheme = new Schema(
@@ -10,11 +10,11 @@ const HistoryScheme = new Schema(
 		},
 		From: {
 			type: Schema.Types.ObjectId,
-			refPath: 'From_type',
+			refPath: "From_type",
 		},
 		To: {
 			type: Schema.Types.ObjectId,
-			refPath: 'To_type',
+			refPath: "To_type",
 		},
 		To_type: {
 			type: String,
@@ -26,10 +26,10 @@ const HistoryScheme = new Schema(
 	},
 	{
 		timestamps: {
-			createdAt: 'created_at',
-			updatedAt: 'last_change',
+			createdAt: "created_at",
+			updatedAt: "last_change",
 		},
 	}
 );
 
-export default model<HistoryDocument>('History', HistoryScheme);
+export default model<HistoryDocument>("History", HistoryScheme);

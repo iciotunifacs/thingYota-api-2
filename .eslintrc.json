@@ -6,7 +6,10 @@
 	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-		"ecmaVersion": 2021
+		"ecmaVersion": 2021,
+		"ecmaFeatures": {
+			"modules": true
+		}
 	},
 	"plugins": ["@typescript-eslint"],
 	"rules": {

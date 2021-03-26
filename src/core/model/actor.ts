@@ -1,6 +1,6 @@
-import { Schema, Document, model } from 'mongoose';
-import { ActorObject } from '../actor';
-import ITimeStamp from '../shared/timestamp/Interface';
+import { Schema, Document, model } from "mongoose";
+import { ActorObject } from "../actor";
+import ITimeStamp from "../shared/timestamp/Interface";
 
 export interface ActorDocument extends Document, ActorObject, ITimeStamp {}
 
@@ -16,12 +16,12 @@ const actorSchema = new Schema(
 		},
 		device_parent: {
 			type: Schema.Types.ObjectId,
-			ref: 'Device',
+			ref: "Device",
 			required: true,
 		},
 		type: {
 			type: String,
-			default: 'motor',
+			default: "motor",
 		},
 		value: {
 			type: Object,
@@ -37,10 +37,10 @@ const actorSchema = new Schema(
 	},
 	{
 		timestamps: {
-			createdAt: 'created_at',
-			updatedAt: 'last_change',
+			createdAt: "created_at",
+			updatedAt: "last_change",
 		},
 	}
 );
 
-export default model<ActorDocument>('Actor', actorSchema);
+export default model<ActorDocument>("Actor", actorSchema);

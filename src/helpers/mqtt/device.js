@@ -1,10 +1,10 @@
-const constants = require('./constants');
+const constants = require("./constants");
 
-const Devive = require('../../core/model/device');
+const Devive = require("../../core/model/device");
 
 const updateDevice = async (payload, socket) => {
 	try {
-		const { mac_addres, name, type = 'ESP' } = payload;
+		const { mac_addres, name, type = "ESP" } = payload;
 		const data = await Devive.findOneAndUpdate(
 			{ mac_addres },
 			{
@@ -25,7 +25,7 @@ const updateDevice = async (payload, socket) => {
 
 const createDevice = async (payload, socket) => {
 	try {
-		const { name, mac_addres, type = 'ESP' } = payload;
+		const { name, mac_addres, type = "ESP" } = payload;
 		const device = await Devive.find({
 			mac_addres,
 		});
@@ -49,11 +49,11 @@ const createDevice = async (payload, socket) => {
 
 module.exports = (payload, socket) => {
 	switch (payload.event) {
-	case constants.Device.CREATE:
-		return createDevice(payload, socket);
-	case constants.Device.UPDATE:
-		return updateDevice(payload, socket);
-	default:
-		return null;
+		case constants.Device.CREATE:
+			return createDevice(payload, socket);
+		case constants.Device.UPDATE:
+			return updateDevice(payload, socket);
+		default:
+			return null;
 	}
 };

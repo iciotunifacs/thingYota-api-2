@@ -1,11 +1,11 @@
-import server, { Request, Response, Next } from './config/server';
-import router from './routes/index';
-const socketIo = require('socket.io');
-const logger = require('morgan');
-const mqtt = require('./services/mqtt-service');
-const mqttHandler = require('./controller/mqtt');
+import server, { Request, Response, Next } from "./config/server";
+import router from "./routes/index";
+const socketIo = require("socket.io");
+const logger = require("morgan");
+const mqtt = require("./services/mqtt-service");
+const mqttHandler = require("./controller/mqtt");
 const io = socketIo.listen(server.server);
-const env = require('./config/env');
+const env = require("./config/env");
 
 // server.use((req: CustonRequest, res: Response, next: Next) => {
 //   // socket
@@ -19,14 +19,14 @@ const env = require('./config/env');
 // router.applyRoutes(server);
 server.applyRoutes(router);
 
-server.get('/helth', (req, res, next) => {
-	return res.send(200, { data: 'OK' });
+server.get("/helth", (req, res, next) => {
+	return res.send(200, { data: "OK" });
 });
 
 // hello
-server.get('/', (req, res, next) => {
-	res.header('Content-Type', 'text/html');
-	return res.end('<h1>This is a REST API</h1>');
+server.get("/", (req, res, next) => {
+	res.header("Content-Type", "text/html");
+	return res.end("<h1>This is a REST API</h1>");
 });
 
 // mqtt.on("connect", (data: any, err: Error) => {
@@ -52,11 +52,11 @@ server.get('/', (req, res, next) => {
 //   }
 // });
 
-server.on('error', (error: Error) => {
+server.on("error", (error: Error) => {
 	console.info(error);
 });
 
-server.on('listening', () => {
+server.on("listening", () => {
 	console.info(
 		`Server ${server.name} is run in ${server.address().family}${
 			server.address().address

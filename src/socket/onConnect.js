@@ -1,4 +1,4 @@
-const { authUser, authArduino } = require('./auth');
+const { authUser, authArduino } = require("./auth");
 
 /**
  * @description Handler for socket 'on connected
@@ -6,10 +6,10 @@ const { authUser, authArduino } = require('./auth');
  */
 const onConnectUser = (socket, io) => {
 	// implementação de coneão genérica
-	console.log('new connection with user');
+	console.log("new connection with user");
 
 	// autenticação
-	socket.on('userAuth', (data) => {
+	socket.on("userAuth", (data) => {
 		authUser(data, socket, io);
 	});
 };
@@ -19,9 +19,9 @@ const onConnectUser = (socket, io) => {
  */
 const onConnectArduino = (socket, io) => {
 	// implementação de coneão genérica
-	console.log('new connection with arduino');
+	console.log("new connection with arduino");
 	// calback intened
-	socket.on('arduinoAuth', async (data) => {
+	socket.on("arduinoAuth", async (data) => {
 		// gera o token do socket para arduino
 		// await authUser(data)
 		authArduino(data, socket, io);

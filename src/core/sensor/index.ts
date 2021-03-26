@@ -1,3 +1,3 @@
-import { SensorObject } from './SensorObject';
+import { SensorObject } from "./SensorObject";
 
 export { SensorObject };

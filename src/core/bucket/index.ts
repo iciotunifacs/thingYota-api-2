@@ -1,3 +1,3 @@
-import { BucketObject } from './BicketObject';
+import { BucketObject } from "./BicketObject";
 
 export { BucketObject };
