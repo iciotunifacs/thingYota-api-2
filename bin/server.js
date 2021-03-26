@@ -38,7 +38,7 @@ mongoose
 		console.info("Database as connected");
 		console.info(url);
 		server.start(env.sever.port, (data) => {
-			console.info(`Press CTRL+C to kill`);
+			console.info("Press CTRL+C to kill");
 		});
 	})
 	.catch((error) => {
