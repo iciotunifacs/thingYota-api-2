@@ -1,14 +1,14 @@
-import { Request, Response, Next } from "restify";
-import errors from "restify-errors";
-import jwt from "jsonwebtoken";
+import { Request, Response, Next } from 'restify';
+import errors from 'restify-errors';
+import jwt from 'jsonwebtoken';
 
-import config from "../config/env";
+import config from '../config/env';
 
-import { compare } from "../core/user";
-import User from "../core/model/user";
-import Device from "../core/model/device";
+import { compare } from '../core/user';
+import User from '../core/model/user';
+import Device from '../core/model/device';
 
-import { validaionBodyEmpty, trimObjctt } from "../utils/common";
+import { validaionBodyEmpty, trimObjctt } from '../utils/common';
 
 /**
  * @description Handler to verified troken acess
@@ -17,14 +17,14 @@ import { validaionBodyEmpty, trimObjctt } from "../utils/common";
  */
 const authUser = async (req: Request, res: Response) => {
 	if (!req.body) {
-		return res.send(new errors.InvalidArgumentError("body is empty"));
+		return res.send(new errors.InvalidArgumentError('body is empty'));
 	}
 
-	const bodyNotFound = validaionBodyEmpty(req.body, ["username", "password"]);
+	const bodyNotFound = validaionBodyEmpty(req.body, ['username', 'password']);
 
 	if (bodyNotFound.length > 0) {
 		return res.send(
-			new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
+			new errors.NotFoundError(`not found params : ${bodyNotFound.join(',')}`)
 		);
 	}
 
@@ -34,23 +34,23 @@ const authUser = async (req: Request, res: Response) => {
 
 	if (!user) {
 		return res.send(
-			new errors.NotAuthorizedError("incorrect password or username")
+			new errors.NotAuthorizedError('incorrect password or username')
 		);
 	}
 
 	if (!user.status) {
-		return res.send(new errors.InvalidCredentialsError("user is not active"));
+		return res.send(new errors.InvalidCredentialsError('user is not active'));
 	}
 
 	const comparePassword = compare(password, user.password);
 
-	if (comparePassword.tag == "left") {
+	if (comparePassword.tag == 'left') {
 		return res.send(comparePassword.value);
 	}
 
-	if (comparePassword.tag == "right" && !comparePassword.value) {
+	if (comparePassword.tag == 'right' && !comparePassword.value) {
 		return res.send(
-			new errors.NotAuthorizedError("incorrect password or username")
+			new errors.NotAuthorizedError('incorrect password or username')
 		);
 	}
 
@@ -60,9 +60,9 @@ const authUser = async (req: Request, res: Response) => {
 			email: user.email,
 			status: user.status,
 			id: user._id,
-			entity: "User",
+			entity: 'User',
 		},
-		config.secret.user ?? ""
+		config.secret.user ?? ''
 	);
 	return res.send(200, {
 		res: true,
@@ -89,12 +89,12 @@ const authUser = async (req: Request, res: Response) => {
  */
 const authDevice = async (req: Request, res: Response) => {
 	if (req.body == null || req.body == undefined) {
-		return res.send(new errors.InvalidArgumentError("body is empty"));
+		return res.send(new errors.InvalidArgumentError('body is empty'));
 	}
-	const bodyNotFound = validaionBodyEmpty(req.body, ["mac_addres"]);
+	const bodyNotFound = validaionBodyEmpty(req.body, ['mac_addres']);
 	if (bodyNotFound.length > 0) {
 		return res.send(
-			new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
+			new errors.NotFoundError(`not found params : ${bodyNotFound.join(',')}`)
 		);
 	}
 
@@ -106,16 +106,16 @@ const authDevice = async (req: Request, res: Response) => {
 
 	const device = await Device.findOne(query);
 
-	if (!device) return res.send(new errors.NotFoundError("Device not found"));
+	if (!device) return res.send(new errors.NotFoundError('Device not found'));
 
 	const token = await jwt.sign(
 		{
 			name: device.name,
 			mac_addres: device.macAdress,
 			id: device._id,
-			entity: "Device",
+			entity: 'Device',
 		},
-		config.secret.user ?? ""
+		config.secret.user ?? ''
 	);
 	return res.send(200, {
 		res: true,
@@ -135,9 +135,9 @@ const authDevice = async (req: Request, res: Response) => {
 const authGuest = async (req: Request, res: Response, send: Next) => {
 	const token = await jwt.sign(
 		{
-			entity: "Guest",
+			entity: 'Guest',
 		},
-		config?.secret?.guest ?? ""
+		config?.secret?.guest ?? ''
 	);
 	return res.send(200, {
 		data: {

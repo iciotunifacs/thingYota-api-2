@@ -1,10 +1,10 @@
 export interface ILeft<A> {
-	tag: "left";
+	tag: 'left';
 	value: A;
 }
 
 export interface IRight<B> {
-	tag: "right";
+	tag: 'right';
 	value: B;
 }
 

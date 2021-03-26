@@ -1,4 +1,4 @@
-const errors = require("restify-errors");
+const errors = require('restify-errors');
 
 const sendEmmiter = (req, res, next) => {
 	const { recives } = req.locals;
