@@ -20,13 +20,13 @@ const env = require("./config/env");
 server.applyRoutes(router);
 
 server.get("/helth", (req, res, next) => {
-  return res.send(200, { data: "OK" });
+	return res.send(200, { data: "OK" });
 });
 
 // hello
 server.get("/", (req, res, next) => {
-  res.header("Content-Type", "text/html");
-  return res.end("<h1>This is a REST API</h1>");
+	res.header("Content-Type", "text/html");
+	return res.end("<h1>This is a REST API</h1>");
 });
 
 // mqtt.on("connect", (data: any, err: Error) => {
@@ -53,14 +53,14 @@ server.get("/", (req, res, next) => {
 // });
 
 server.on("error", (error: Error) => {
-  console.info(error);
+	console.info(error);
 });
 
 server.on("listening", () => {
-  console.info(
-    `Server ${server.name} is run in ${server.address().family}${
-      server.address().address
-    }${server.address().port}`
-  );
+	console.info(
+		`Server ${server.name} is run in ${server.address().family}${
+			server.address().address
+		}${server.address().port}`
+	);
 });
 module.exports = server;

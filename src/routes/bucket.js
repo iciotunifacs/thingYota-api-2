@@ -2,11 +2,11 @@ const router = new (require("restify-router").Router)();
 
 // controllers
 const {
-  find,
-  findOne,
-  create,
-  put,
-  createRelationShip,
+	find,
+	findOne,
+	create,
+	put,
+	createRelationShip,
 } = require("../controller/bucket");
 
 const { authUser } = require("../middleware/auth");

@@ -1,11 +1,11 @@
 export enum DeviceType {
-  AVR,
-  RBPY,
-  OTHER,
+	AVR,
+	RBPY,
+	OTHER,
 }
 
 export interface DeviceObject {
-  macAdress: string;
-  name: string;
-  type?: DeviceType;
+	macAdress: string;
+	name: string;
+	type?: DeviceType;
 }

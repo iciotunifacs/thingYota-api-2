@@ -8,7 +8,7 @@ const { find, findOne, delOne } = require("../controller/history");
 // endpoints
 router.get("", find);
 router.get("/:id", findOne);
-router.del("/:id",delOne );
+router.del("/:id", delOne);
 
 router.use(authUser);
 

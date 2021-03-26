@@ -1,12 +1,7 @@
 const router = new (require("restify-router").Router)();
 
 // controllers
-const {
-  find,
-  findOne,
-  create,
-  put,
-} = require("../controller/sensor");
+const { find, findOne, create, put } = require("../controller/sensor");
 
 const { authUser } = require("../middleware/auth");
 

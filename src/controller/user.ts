@@ -13,26 +13,26 @@ import mongoose from "mongoose";
  * @param {Function} next
  */
 export const find = async (req: Request, res: Response, next: Next) => {
-  const { limit } = req.query;
-  const offset = (parseInt(req.query?.offset) - 1) * limit || 0;
-  try {
-    const data = await User.find()
-      .limit(parseInt(limit) || 0)
-      .skip(offset || 0)
-      .exec();
+	const { limit } = req.query;
+	const offset = (parseInt(req.query?.offset) - 1) * limit || 0;
+	try {
+		const data = await User.find()
+			.limit(parseInt(limit) || 0)
+			.skip(offset || 0)
+			.exec();
 
-    const total = await User.estimatedDocumentCount();
+		const total = await User.estimatedDocumentCount();
 
-    if (offset >= total && total != 0)
-      return res.send(new errors.LengthRequiredError("out of rnge"));
+		if (offset >= total && total != 0)
+			return res.send(new errors.LengthRequiredError("out of rnge"));
 
-    return res.send(200, {
-      data: data,
-      metadata: { limit, offset, total },
-    });
-  } catch (error) {
-    return res.send(new errors.InternalServerError(`${error}`));
-  }
+		return res.send(200, {
+			data: data,
+			metadata: { limit, offset, total },
+		});
+	} catch (error) {
+		return res.send(new errors.InternalServerError(`${error}`));
+	}
 };
 
 /**
@@ -43,57 +43,57 @@ export const find = async (req: Request, res: Response, next: Next) => {
  * @requires req
  */
 export const create = async (req: Request, res: Response, next: Next) => {
-  if (!req.body) {
-    return res.send(new errors.InvalidArgumentError("body is empty"));
-  }
+	if (!req.body) {
+		return res.send(new errors.InvalidArgumentError("body is empty"));
+	}
 
-  try {
-    const user = new User({
-      ...req.body,
-      password: {
-        hash_password: req.body.password,
-      },
-    });
-    await user.validate();
-    const result = await user.save();
+	try {
+		const user = new User({
+			...req.body,
+			password: {
+				hash_password: req.body.password,
+			},
+		});
+		await user.validate();
+		const result = await user.save();
 
-    return res.send(201, { data: result });
-  } catch (error) {
-    if (error.code == 11000) {
-      return res.send(
-        new errors.ConflictError(
-          `duplicated : ${JSON.stringify(error.keyValue)}`
-        )
-      );
-    } else if (error instanceof mongoose.Error.ValidationError) {
-      return res.send(new errors.InvalidContentError(error));
-    }
-    return res.send(new errors.InternalServerError(error));
-  }
+		return res.send(201, { data: result });
+	} catch (error) {
+		if (error.code == 11000) {
+			return res.send(
+				new errors.ConflictError(
+					`duplicated : ${JSON.stringify(error.keyValue)}`
+				)
+			);
+		} else if (error instanceof mongoose.Error.ValidationError) {
+			return res.send(new errors.InvalidContentError(error));
+		}
+		return res.send(new errors.InternalServerError(error));
+	}
 };
 
 export const findOne = async (req: Request, res: Response, next: Next) => {
-  const { id } = req.params;
-  if (!id) {
-    return res.send(new errors.InvalidArgumentError("id not found"));
-  }
+	const { id } = req.params;
+	if (!id) {
+		return res.send(new errors.InvalidArgumentError("id not found"));
+	}
 
-  try {
-    const data = await User.findById(req.params.id);
+	try {
+		const data = await User.findById(req.params.id);
 
-    if (!data) {
-      return res.send(new errors.NotFoundError(`User_id ${id} not found`));
-    }
+		if (!data) {
+			return res.send(new errors.NotFoundError(`User_id ${id} not found`));
+		}
 
-    return res.send(200, {
-      res: true,
-      data: data,
-    });
-  } catch (error) {
-    return res.send(
-      new errors.InternalServerError(`An database error has occoured`)
-    );
-  }
+		return res.send(200, {
+			res: true,
+			data: data,
+		});
+	} catch (error) {
+		return res.send(
+			new errors.InternalServerError(`An database error has occoured`)
+		);
+	}
 };
 
 /**
@@ -103,36 +103,36 @@ export const findOne = async (req: Request, res: Response, next: Next) => {
  * @param {*} next
  */
 export const put = async (req: Request, res: Response, next: Next) => {
-  if (!req.body)
-    return res.send(new errors.InvalidArgumentError("body is empty"));
+	if (!req.body)
+		return res.send(new errors.InvalidArgumentError("body is empty"));
 
-  const { id } = req.params;
-  const { type, status, username, first_name, last_name, email } = req.body;
+	const { id } = req.params;
+	const { type, status, username, first_name, last_name, email } = req.body;
 
-  if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
+	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 
-  let nextParans = trimObjctt({
-    type,
-    status,
-    username,
-    first_name,
-    last_name,
-    email,
-  });
+	let nextParans = trimObjctt({
+		type,
+		status,
+		username,
+		first_name,
+		last_name,
+		email,
+	});
 
-  try {
-    const user = await User.findByIdAndUpdate(id, nextParans, {
-      useFindAndModify: false,
-    });
+	try {
+		const user = await User.findByIdAndUpdate(id, nextParans, {
+			useFindAndModify: false,
+		});
 
-    if (!user) {
-      return res.send(new errors.NotFoundError(`User_id ${id} not found`));
-    }
+		if (!user) {
+			return res.send(new errors.NotFoundError(`User_id ${id} not found`));
+		}
 
-    return res.send(200, { data: user });
-  } catch (error) {
-    res.send(new errors.InternalServerError(`${error}`));
-  }
+		return res.send(200, { data: user });
+	} catch (error) {
+		res.send(new errors.InternalServerError(`${error}`));
+	}
 };
 
 /**
@@ -142,72 +142,72 @@ export const put = async (req: Request, res: Response, next: Next) => {
  * @param {Next} next
  */
 export const createRelationShip = async (
-  req: Request,
-  res: Response,
-  next: Next
+	req: Request,
+	res: Response,
+	next: Next
 ) => {
-  if (req.body == null || req.body == undefined)
-    return res.send(new errors.InvalidArgumentError("body is empty"));
+	if (req.body == null || req.body == undefined)
+		return res.send(new errors.InvalidArgumentError("body is empty"));
 
-  const { id } = req.params;
+	const { id } = req.params;
 
-  if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
+	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 
-  const bodyNotFound = validaionBodyEmpty(req.body, ["to", "type"]);
+	const bodyNotFound = validaionBodyEmpty(req.body, ["to", "type"]);
 
-  if (bodyNotFound.length > 0)
-    return res.send(
-      new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
-    );
+	if (bodyNotFound.length > 0)
+		return res.send(
+			new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
+		);
 
-  const { to, type } = req.body;
+	const { to, type } = req.body;
 
-  const user = await User.findById(req.params.id);
+	const user = await User.findById(req.params.id);
 
-  if (!user)
-    return res.send(new errors.NotFoundError(`User._id ${id} not found`));
+	if (!user)
+		return res.send(new errors.NotFoundError(`User._id ${id} not found`));
 
-  let dataTo, data;
+	let dataTo, data;
 
-  try {
-    switch (type) {
-      case "Bucket":
-      case "bucket":
-        dataTo = await Bucket.findById(to.id);
+	try {
+		switch (type) {
+			case "Bucket":
+			case "bucket":
+				dataTo = await Bucket.findById(to.id);
 
-        if (!dataTo)
-          return res.send(
-            new errors.NotFoundError(
-              `Bucket._id ${JSON.stringify(to.id)} not found`
-            )
-          );
+				if (!dataTo)
+					return res.send(
+						new errors.NotFoundError(
+							`Bucket._id ${JSON.stringify(to.id)} not found`
+						)
+					);
 
-        data = await User.findByIdAndUpdate(
-          id,
-          {
-            $push: {
-              Buckets: dataTo._id,
-            },
-          },
-          {
-            new: true,
-            upsert: true,
-            setDefaultsOnInsert: true,
-          }
-        );
-        break;
-      default:
-        return res.send(
-          new errors.InvalidContentError(`type ${type} is not valid.`)
-        );
-    }
+				data = await User.findByIdAndUpdate(
+					id,
+					{
+						$push: {
+							Buckets: dataTo._id,
+						},
+					},
+					{
+						new: true,
+						upsert: true,
+						setDefaultsOnInsert: true,
+					}
+				);
+				break;
+			default:
+				return res.send(
+					new errors.InvalidContentError(`type ${type} is not valid.`)
+				);
+		}
 
-    return res.send(200, {
-      data: data,
-    });
-  } catch (error) {
-    return res.send(new errors.InternalServerError(error));
-  }
+		return res.send(200, {
+			data: data,
+		});
+	} catch (error) {
+		return res.send(new errors.InternalServerError(error));
+	}
 };
 
 /**
@@ -217,68 +217,68 @@ export const createRelationShip = async (
  * @param {Next} next
  */
 export const deleteRelationShip = async (
-  req: Request,
-  res: Response,
-  next: Next
+	req: Request,
+	res: Response,
+	next: Next
 ) => {
-  if (req.body == null || req.body == undefined)
-    return res.send(new errors.InvalidArgumentError("body is empty"));
+	if (req.body == null || req.body == undefined)
+		return res.send(new errors.InvalidArgumentError("body is empty"));
 
-  const { id } = req.params;
+	const { id } = req.params;
 
-  if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
+	if (!id) return res.send(new errors.InvalidArgumentError("id not found"));
 
-  const bodyNotFound = validaionBodyEmpty(req.body, ["to", "type"]);
+	const bodyNotFound = validaionBodyEmpty(req.body, ["to", "type"]);
 
-  if (bodyNotFound.length > 0)
-    return res.send(
-      new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
-    );
+	if (bodyNotFound.length > 0)
+		return res.send(
+			new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
+		);
 
-  const { to, type } = req.body;
+	const { to, type } = req.body;
 
-  const user = await User.findById(req.params.id);
+	const user = await User.findById(req.params.id);
 
-  if (!user) {
-    return res.send(new errors.NotFoundError(`User._id ${id} not found`));
-  }
+	if (!user) {
+		return res.send(new errors.NotFoundError(`User._id ${id} not found`));
+	}
 
-  let dataTo, data;
+	let dataTo, data;
 
-  try {
-    switch (type) {
-      case "Bucket":
-      case "bucket":
-        dataTo = await Bucket.findById(to.id);
+	try {
+		switch (type) {
+			case "Bucket":
+			case "bucket":
+				dataTo = await Bucket.findById(to.id);
 
-        if (!dataTo)
-          return res.send(
-            new errors.NotFoundError(
-              `Bucket._id ${JSON.stringify(to.id)} not found`
-            )
-          );
+				if (!dataTo)
+					return res.send(
+						new errors.NotFoundError(
+							`Bucket._id ${JSON.stringify(to.id)} not found`
+						)
+					);
 
-        data = await User.findByIdAndUpdate(
-          id,
-          {
-            $pull: {
-              Buckets: dataTo._id,
-            },
-          },
-          { new: true }
-        );
-        break;
-      default:
-        return res.send(
-          new errors.InvalidContentError(`type ${type} is not valid.`)
-        );
-    }
+				data = await User.findByIdAndUpdate(
+					id,
+					{
+						$pull: {
+							Buckets: dataTo._id,
+						},
+					},
+					{ new: true }
+				);
+				break;
+			default:
+				return res.send(
+					new errors.InvalidContentError(`type ${type} is not valid.`)
+				);
+		}
 
-    return res.send(200, {
-      data: data,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.send(new errors.InternalServerError(error));
-  }
+		return res.send(200, {
+			data: data,
+		});
+	} catch (error) {
+		console.log(error);
+		return res.send(new errors.InternalServerError(error));
+	}
 };

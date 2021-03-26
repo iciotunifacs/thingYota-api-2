@@ -2,12 +2,12 @@ import { Router } from "restify-router";
 
 // controllers
 import {
-  find,
-  findOne,
-  create,
-  put,
-  createRelationShip,
-  deleteRelationShip,
+	find,
+	findOne,
+	create,
+	put,
+	createRelationShip,
+	deleteRelationShip,
 } from "../controller/user";
 
 import { authUser } from "../middleware/auth";
