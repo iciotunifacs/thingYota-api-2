@@ -11,7 +11,7 @@ describe("CreateUser", () => {
 	test("should be create user", async () => {
 		const usecase = new CreateUser(userRepository)
 		const user = await usecase.execute(
-			await UxserCreateAdapter.create({
+			UxserCreateAdapter.create({
 				firstname: "Victor",
 				lastname: "Raton",
 				email: "vfbraton@gmail.com",
@@ -30,7 +30,7 @@ describe("CreateUser", () => {
 		const usecase = new CreateUser(userRepository)
 		expect(async () => {
 			await usecase.execute(
-				await UxserCreateAdapter.create({
+				UxserCreateAdapter.create({
 					firstname: "Victor",
 					lastname: "Raton",
 					email: "vfbratongmail.com",
@@ -47,7 +47,7 @@ describe("CreateUser", () => {
 		expect(
 			async () =>
 				await usecase.execute(
-					await UxserCreateAdapter.create({
+					UxserCreateAdapter.create({
 						firstname: "Victor",
 						lastname: "Raton",
 						email: "vfbraton@gmail.com",

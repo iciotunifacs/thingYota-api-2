@@ -33,7 +33,7 @@ export default class User {
 		this.password = password
 	}
 
-	async build() {
+	build() {
 		const { tag, value } = this.validate()
 		if (tag == "right") {
 			throw value
