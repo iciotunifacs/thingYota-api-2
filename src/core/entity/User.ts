@@ -16,7 +16,8 @@ export default class User {
 	readonly firstname: string
 	readonly lastname: string
 	readonly email: string
-	readonly password: PasswordObject
+	private passwordObject: PasswordObject = { hash_password: "", salt: "" }
+	private password: string
 	readonly isAdmin: boolean
 	constructor({
 		email,
@@ -25,47 +26,23 @@ export default class User {
 		isAdmin,
 		password,
 	}: UserObjectParams) {
-		const response = this.preValidate({
-			email,
-			firstname,
-			lastname,
-			isAdmin,
-			password,
-		})
-
-		if (response.tag == "right") {
-			throw response.value
-		}
 		this.email = email
 		this.firstname = firstname
 		this.lastname = lastname
 		this.isAdmin = isAdmin
-		if (password.length < 6 && password.length > 32) {
-			Promise.reject("erro on create password")
-		}
-		const salt = generateSalt(12)
-		this.password = hash(password, salt)
+		this.password = password
 	}
 
-	private preValidate(params: UserObjectParams): Either<boolean, Error> {
-		for (const key in this) {
-			const value = this[key]
-			switch (key) {
-				case "email":
-					if (!validator.isEmail(`${value}`)) {
-						return Right(new Error("must be a valid email"))
-					}
-					break
-				case "password":
-					{
-						if (`${value}`.length < 6 || `${value}`.length > 32) {
-							return Right(new Error("must be a valid password"))
-						}
-					}
-					break
-			}
+	async build() {
+		const { tag, value } = this.validate()
+		if (tag == "right") {
+			throw value
 		}
-		return Left(true)
+		this.passwordObject = hash(this.password, generateSalt(12))
+	}
+
+	getPassword() {
+		return this.passwordObject
 	}
 
 	validate(): Either<boolean, Error> {

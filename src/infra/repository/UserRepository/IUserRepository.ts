@@ -8,6 +8,6 @@ export interface UserObjectFilter {
 	password?: string
 }
 export default interface IUserRepository {
-	findOne(params: UserObjectFilter): User | undefined
-	create(params: User): User
+	findOne(params: UserObjectFilter): Promise<User | undefined>
+	create(params: User): Promise<User>
 }
