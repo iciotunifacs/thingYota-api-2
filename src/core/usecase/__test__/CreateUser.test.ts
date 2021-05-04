@@ -19,8 +19,8 @@ describe("CreateUser", () => {
 				password: "vfbr1101",
 			}),
 		)
-		expect(user.getPassword()).toBeDefined()
-		expect(compare("vfbr1101", user.getPassword()))
+		expect(user.password).toBeDefined()
+		expect(compare("vfbr1101", user.password))
 		expect(user.email).toBe("vfbraton@gmail.com")
 
 		expect(userRepository.stack).toHaveLength(1)
@@ -38,7 +38,7 @@ describe("CreateUser", () => {
 					password: "vfbr1101",
 				}),
 			)
-		}).rejects.toThrowError("must be a valid email")
+		}).rejects.toThrowError("vfbratongmail.com is not valid email")
 
 		expect(userRepository.stack).toHaveLength(0)
 	})
@@ -55,7 +55,9 @@ describe("CreateUser", () => {
 						password: "vf",
 					}),
 				),
-		).rejects.toThrow("Error: must be a valid password")
+		).rejects.toThrow(
+			"vf is a not valid password, shoud be a greather than 6 and less than 32 caracteres",
+		)
 
 		expect(userRepository.stack).toHaveLength(0)
 	})

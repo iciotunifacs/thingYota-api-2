@@ -1,5 +1,7 @@
+/* eslint-disable indent */
 import validator from "validator"
 import Either from "../shared/either"
+import Entity from "../shared/entity"
 import Left from "../shared/either/Left"
 import Right from "../shared/either/Right"
 import { generateSalt, hash, PasswordObject } from "../user"
@@ -12,13 +14,12 @@ export interface UserObjectParams {
 	password: string
 }
 
-export default class User {
-	readonly firstname: string
-	readonly lastname: string
-	readonly email: string
-	private passwordObject: PasswordObject = { hash_password: "", salt: "" }
-	private password: string
-	readonly isAdmin: boolean
+export class User {
+	public firstname: string
+	public lastname: string
+	public email: string
+	public password: PasswordObject = { hash_password: "", salt: "" }
+	public isAdmin: boolean
 	constructor({
 		email,
 		firstname,
@@ -30,39 +31,44 @@ export default class User {
 		this.firstname = firstname
 		this.lastname = lastname
 		this.isAdmin = isAdmin
-		this.password = password
+		this.password = hash(password, generateSalt(12))
 	}
+}
 
-	build() {
-		const { tag, value } = this.validate()
-		if (tag == "right") {
-			throw value
-		}
-		this.passwordObject = hash(this.password, generateSalt(12))
-	}
-
-	getPassword() {
-		return this.passwordObject
-	}
-
-	validate(): Either<boolean, Error> {
-		for (const key in this) {
-			const value = this[key]
+export default class UserEntity extends Entity<User, UserObjectParams> {
+	validation(params: UserObjectParams): Either<Error, boolean> {
+		for (const key in params) {
 			switch (key) {
 				case "email":
-					if (!validator.isEmail(`${value}`)) {
-						return Right(new Error("must be a valid email"))
+					if (!validator.isEmail(params[key])) {
+						return Left(new Error(`${params[key]} is not valid email`))
 					}
 					break
 				case "password":
-					{
-						if (`${value}`.length < 6 || `${value}`.length > 32) {
-							return Right(new Error("must be a valid password"))
-						}
+					if (!validator.isAlphanumeric(params[key])) {
+						return Left(
+							new Error(
+								`${params[key]} is a not valid password, shoud be a alphanumeric`,
+							),
+						)
+					}
+					if (params[key].length < 6 || params[key].length > 32) {
+						return Left(
+							new Error(
+								`${params[key]} is a not valid password, shoud be a greather than 6 and less than 32 caracteres`,
+							),
+						)
 					}
 					break
 			}
 		}
-		return Left(true)
+		return Right(true)
+	}
+	create(params: UserObjectParams): User {
+		const result = this.validation(params)
+		if (result.tag == "left") {
+			throw result.value
+		}
+		return new User(params)
 	}
 }

@@ -1,4 +1,4 @@
-import User from "../../../core/entity/User"
+import { User } from "../../../core/entity/User"
 import IUserRepository, { UserObjectFilter } from "./IUserRepository"
 
 export default class UserInMemoryRepository implements IUserRepository {
@@ -12,7 +12,7 @@ export default class UserInMemoryRepository implements IUserRepository {
 		return Promise.resolve(params)
 	}
 
-	clear() {
+	clear(): void {
 		this.stack.splice(0, this.stack.length)
 	}
 }

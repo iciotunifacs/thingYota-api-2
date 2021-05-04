@@ -1,14 +1,14 @@
-import UseCase, { UseCaseType } from "../shared/usecase/UseCase"
+import UseCase from "../shared/usecase/UseCase"
 
-import User, { UserObjectParams } from "../entity/User"
 import UserRepository from "../../infra/repository/UserRepository/IUserRepository"
+import { User } from "../entity/User"
 
 export default class CreateUser implements UseCase<User> {
 	readonly userRepository: UserRepository
 	constructor(userRepository: UserRepository) {
 		this.userRepository = userRepository
 	}
-	async execute(params: User) {
+	async execute(params: User): Promise<User> {
 		try {
 			const user = params
 			return await this.userRepository.create(user)

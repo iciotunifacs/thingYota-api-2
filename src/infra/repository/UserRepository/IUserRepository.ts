@@ -1,4 +1,4 @@
-import User from "../../../core/entity/User"
+import { User } from "../../../core/entity/User"
 
 export interface UserObjectFilter {
 	firstname?: string
