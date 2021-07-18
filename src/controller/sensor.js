@@ -33,14 +33,14 @@ const find = async (req, res, next) => {
     const total = await Sensor.estimatedDocumentCount();
 
     if (offset >= total && total != 0)
-       res.send(new errors.LengthRequiredError("out of rnge"));
+      res.send(new errors.LengthRequiredError("out of rnge"));
 
-     res.send(200, {
+    res.send(200, {
       data: data,
       metadata: { limit, offset, total },
     });
   } catch (error) {
-     res.send(new errors.InternalServerError(`${error}`));
+    res.send(new errors.InternalServerError(`${error}`));
   }
 };
 
@@ -54,20 +54,20 @@ const find = async (req, res, next) => {
 const findOne = async (req, res, next) => {
   const { id } = req.params;
 
-  if (!id)  res.send(new errors.InvalidArgumentError("id not found"));
+  if (!id) res.send(new errors.InvalidArgumentError("id not found"));
 
   try {
     const data = await Sensor.findById(req.params.id);
 
     if (!data || data.length == 0)
-       res.send(new errors.NotFoundError("Sensor not found"));
+      res.send(new errors.NotFoundError("Sensor not found"));
 
     res.send(200, {
       res: true,
       data: data,
     });
   } catch (error) {
-     res.send(new errors.InternalServerError(`${error}`));
+    res.send(new errors.InternalServerError(`${error}`));
   }
 };
 
@@ -81,7 +81,7 @@ const findOne = async (req, res, next) => {
  */
 const create = async (req, res, next) => {
   if (req.body == null || req.body == undefined)
-     res.send(new errors.InvalidArgumentError("body is empty"));
+    res.send(new errors.InvalidArgumentError("body is empty"));
 
   const bodyNotFound = validaionBodyEmpty(req.body, [
     "name",
@@ -91,7 +91,7 @@ const create = async (req, res, next) => {
   ]);
 
   if (bodyNotFound.length > 0)
-     res.send(
+    res.send(
       new errors.NotFoundError(`not found params : ${bodyNotFound.join(",")}`)
     );
 
@@ -100,9 +100,7 @@ const create = async (req, res, next) => {
   const device = await Device.findById(device_parent);
 
   if (!device)
-     res.send(
-      new errors.NotFoundError(`Device._id ${device_parent} not found`)
-    );
+    res.send(new errors.NotFoundError(`Device._id ${device_parent} not found`));
 
   const sensor = new Sensor({
     create_at: Date(),
@@ -141,7 +139,7 @@ const create = async (req, res, next) => {
 
           History.create({ ...historyData });
 
-           res.send(201, {
+          res.send(201, {
             res: true,
             data: data,
           });
@@ -159,24 +157,24 @@ const create = async (req, res, next) => {
  */
 const put = async (req, res, send) => {
   if (req.body == null || req.body == undefined)
-     res.send(new errors.InvalidArgumentError("body is empty"));
+    res.send(new errors.InvalidArgumentError("body is empty"));
 
   const { device_parent, name, type, status, port, value } = req.body;
   const { id } = req.params;
 
-  if (!id)  res.send(new errors.InvalidArgumentError("id not found"));
+  if (!id) res.send(new errors.InvalidArgumentError("id not found"));
 
   try {
     const sensor = await Sensor.findById(id);
 
     if (!sensor)
-       res.send(new errors.NotFoundError(`Sensor_id ${id} not found`));
+      res.send(new errors.NotFoundError(`Sensor_id ${id} not found`));
 
     if (device_parent) {
       const device = await Device.findById(req.body.device_parent);
 
       if (!device)
-         res.send(
+        res.send(
           new errors.NotFoundError(`Device_id ${device_parent} not found`)
         );
 
@@ -207,9 +205,7 @@ const put = async (req, res, send) => {
     }).populate("Sensors");
 
     // emiters para socketio
-    let recives = buckets.map((el) => {
-       mockBuckets(el, data, "Actors");
-    });
+    let recives = buckets.map((el) => mockBuckets(el, data, "Actors"));
 
     let historyData = {
       To: data._id,
@@ -236,7 +232,7 @@ const put = async (req, res, send) => {
 
     send();
   } catch (error) {
-     res.send(new errors.InternalServerError(`${error}`));
+    res.send(new errors.InternalServerError(`${error}`));
   }
 };
 
@@ -250,15 +246,15 @@ const registerValue = async (req, res, next) => {
   const { id } = req.params;
   const { value } = req.body;
 
-  if (!id)  res.send(new errors.InvalidArgumentError("id not found"));
+  if (!id) res.send(new errors.InvalidArgumentError("id not found"));
 
-  if (!value)  res.send(new errors.InvalidContentError("Body not found"));
+  if (!value) res.send(new errors.InvalidContentError("Body not found"));
 
   try {
     const sensor = await Sensor.findById(id);
 
     if (!sensor || sensor.length == 0)
-       res.send(new errors.NotFoundError("Sensor not found"));
+      res.send(new errors.NotFoundError("Sensor not found"));
 
     const buckets = await Bucket.find({ Sensors: { $in: { _id: id } } });
 
@@ -289,12 +285,12 @@ const registerValue = async (req, res, next) => {
       });
     }
 
-     res.send(200, {
+    res.send(200, {
       data: data,
     });
   } catch (error) {
     console.log(error);
-     res.send(new errors.InternalServerError(`${error}`));
+    res.send(new errors.InternalServerError(`${error}`));
   }
 };
 

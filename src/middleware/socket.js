@@ -13,7 +13,7 @@ const sendEmmiter = (req, res, next) => {
     }
     next();
   } catch (error) {
-     res.send(new errors.InternalServerError(`${error}`));
+    res.send(new errors.InternalServerError(`${error}`));
   }
 };
 
